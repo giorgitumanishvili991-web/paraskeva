@@ -1,0 +1,2528 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>◈ PARASKEVA.AI v3 ◈</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#050905;--bg2:#0a110a;--bg3:#0f1a0f;--green:#00ff41;--green-dim:#00aa2b;--green-dark:#003310;--cyan:#00e5ff;--red:#ff003c;--yellow:#ffe000;--purple:#bf5fff;--text:#a0ffa0;--text-dim:#507550;--border:#1a3a1a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px);pointer-events:none;z-index:9998;}
+#mc{position:fixed;inset:0;opacity:0.05;z-index:0;pointer-events:none;}
+
+/* BOOT */
+#boot{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.boot-logo{font-family:'VT323',monospace;font-size:clamp(3rem,10vw,6rem);color:var(--green);text-shadow:0 0 30px var(--green),0 0 60px rgba(0,255,65,.4);letter-spacing:6px;animation:glitch 4s infinite;}
+@keyframes glitch{0%,88%,100%{transform:none;text-shadow:0 0 30px var(--green),0 0 60px rgba(0,255,65,.4);}89%{transform:translateX(-4px);text-shadow:-2px 0 var(--cyan),2px 0 var(--red);}91%{transform:translateX(4px);}93%{transform:translateX(-2px);}95%{transform:none;}}
+.boot-sub{color:var(--text-dim);font-size:.72rem;letter-spacing:4px;margin-top:.7rem;}
+.boot-log{margin-top:1.8rem;width:500px;max-width:90vw;font-size:.7rem;color:var(--text-dim);line-height:1.9;}
+.boot-line.ok::after{content:' [OK]';color:var(--green);}
+.boot-progress{margin-top:1rem;width:500px;max-width:90vw;height:2px;background:var(--bg3);}
+.boot-bar{height:100%;background:var(--green);box-shadow:0 0 8px var(--green);width:0;transition:width .12s;}
+
+/* API MODAL */
+#api-modal{display:none!important;}
+.modal-box{background:var(--bg2);border:1px solid var(--green);box-shadow:0 0 40px rgba(0,255,65,.2);padding:2.2rem;width:500px;max-width:96vw;}
+.modal-title{font-family:'Orbitron',monospace;color:var(--green);font-size:.88rem;font-weight:700;letter-spacing:4px;margin-bottom:1.2rem;}
+.modal-desc{color:var(--text-dim);font-size:.76rem;line-height:1.9;margin-bottom:1.4rem;}
+.modal-desc a{color:var(--cyan);}
+.modal-desc .warn{color:var(--yellow);}
+.modal-saved{color:var(--green);font-size:.72rem;margin-top:.5rem;display:none;}
+
+/* INPUTS / BUTTONS */
+.t-input{width:100%;background:var(--bg);border:1px solid var(--text-dim);color:var(--green);padding:.65rem 1rem;font-family:'Share Tech Mono',monospace;font-size:.83rem;outline:none;transition:border-color .2s;}
+.t-input:focus{border-color:var(--green);box-shadow:0 0 8px rgba(0,255,65,.15);}
+select.t-input option{background:var(--bg);color:var(--text);}
+.btn{background:transparent;border:1px solid var(--green);color:var(--green);padding:.55rem 1.5rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:all .2s;margin-top:.7rem;display:inline-block;}
+.btn:hover{background:var(--green);color:var(--bg);box-shadow:0 0 16px rgba(0,255,65,.35);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btn-c{border-color:var(--cyan);color:var(--cyan);}
+.btn-c:hover{background:var(--cyan);color:var(--bg);}
+.btn-r{border-color:var(--red);color:var(--red);margin-top:0;}
+.btn-r:hover{background:var(--red);color:var(--bg);}
+.btn-p{border-color:var(--purple);color:var(--purple);margin-top:0;}
+.btn-p:hover{background:var(--purple);color:var(--bg);}
+.btn-y{border-color:var(--yellow);color:var(--yellow);margin-top:0;}
+.btn-y:hover{background:var(--yellow);color:var(--bg);}
+.btn-sm{padding:.22rem .65rem;font-size:.66rem;letter-spacing:1px;}
+
+/* APP */
+#app{display:none;min-height:100vh;position:relative;z-index:1;}
+.header{border-bottom:1px solid var(--border);padding:.7rem 1.4rem;display:flex;align-items:center;justify-content:space-between;background:rgba(5,9,5,.96);backdrop-filter:blur(8px);position:sticky;top:0;z-index:100;}
+.h-logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1rem;color:var(--green);letter-spacing:5px;text-shadow:0 0 12px rgba(0,255,65,.4);}
+.h-logo span{color:var(--cyan);}
+.h-right{display:flex;align-items:center;gap:1.2rem;font-size:.7rem;color:var(--text-dim);flex-wrap:wrap;}
+.status-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:blink 1.8s infinite;margin-right:.35rem;}
+@keyframes blink{50%{opacity:0;}}
+.h-time{color:var(--cyan);font-size:.83rem;}
+.h-xp{color:var(--yellow);}
+
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:190px 1fr;min-height:calc(100vh - 50px);}
+.sidebar{border-right:1px solid var(--border);padding:1.3rem 0;background:rgba(5,9,5,.8);display:flex;flex-direction:column;}
+.sb-sec{padding:.25rem 1rem;font-size:.6rem;color:var(--text-dim);letter-spacing:3px;text-transform:uppercase;margin-top:.7rem;margin-bottom:.15rem;}
+.nav-btn{display:flex;align-items:center;gap:.75rem;padding:.65rem 1.1rem;width:100%;background:none;border:none;color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:.75rem;cursor:pointer;text-align:left;transition:all .2s;position:relative;letter-spacing:1px;}
+.nav-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--green);transform:scaleY(0);transition:transform .2s;}
+.nav-btn:hover{color:var(--green);background:rgba(0,255,65,.04);}
+.nav-btn.active{color:var(--green);background:rgba(0,255,65,.07);}
+.nav-btn.active::before{transform:scaleY(1);}
+.n-icon{font-size:.95rem;width:18px;text-align:center;}
+.sb-streak{margin:auto 1rem 1rem;border:1px solid var(--border);padding:.9rem;text-align:center;}
+.streak-n{font-family:'VT323',monospace;font-size:2.8rem;color:var(--yellow);line-height:1;}
+.streak-l{font-size:.6rem;color:var(--text-dim);letter-spacing:2px;margin-top:.2rem;}
+
+/* CONTENT */
+.content{padding:1.4rem;overflow-y:auto;}
+.panel{display:none;animation:fadeIn .3s ease;}
+.panel.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+.sec-head{display:flex;align-items:center;gap:.9rem;margin-bottom:1.4rem;padding-bottom:.65rem;border-bottom:1px solid var(--border);}
+.sec-title{font-family:'Orbitron',monospace;font-size:.82rem;color:var(--green);letter-spacing:3px;}
+.sec-badge{background:var(--green-dark);border:1px solid var(--green-dim);color:var(--green);padding:.1rem .5rem;font-size:.6rem;letter-spacing:2px;}
+.sec-badge-c{background:rgba(0,229,255,.08);border:1px solid var(--cyan);color:var(--cyan);}
+.sec-badge-p{background:rgba(191,95,255,.08);border:1px solid var(--purple);color:var(--purple);}
+.sec-badge-y{background:rgba(255,224,0,.08);border:1px solid var(--yellow);color:var(--yellow);}
+
+/* CHAT */
+.chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 165px);min-height:380px;}
+.chat-msgs{flex:1;overflow-y:auto;padding:.3rem 0;scrollbar-width:thin;scrollbar-color:var(--green-dim) transparent;}
+.chat-msgs::-webkit-scrollbar{width:3px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--green-dim);}
+.msg{display:flex;gap:.85rem;margin-bottom:1rem;animation:msgIn .3s ease;}
+@keyframes msgIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:none;}}
+.m-av{width:32px;height:32px;border:1px solid;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;margin-top:2px;}
+.msg.user .m-av{border-color:var(--cyan);color:var(--cyan);}
+.msg.ai .m-av{border-color:var(--green);color:var(--green);}
+.m-name{font-size:.6rem;letter-spacing:2px;margin-bottom:.22rem;}
+.msg.user .m-name{color:var(--cyan);}
+.msg.ai .m-name{color:var(--green);}
+.m-text{font-size:.8rem;line-height:1.75;color:var(--text);white-space:pre-wrap;}
+.typing-dots{display:flex;gap:4px;padding:.4rem 0;}
+.td{width:6px;height:6px;background:var(--green);animation:td 1s infinite;}
+.td:nth-child(2){animation-delay:.2s;}.td:nth-child(3){animation-delay:.4s;}
+@keyframes td{0%,100%{transform:none;}50%{transform:translateY(-5px);}}
+.quick-btns{display:flex;gap:.35rem;flex-wrap:wrap;padding:.6rem 0;}
+.qb{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.25rem .7rem;font-family:'Share Tech Mono',monospace;font-size:.68rem;cursor:pointer;transition:all .2s;}
+.qb:hover{border-color:var(--green);color:var(--green);background:rgba(0,255,65,.04);}
+.chat-foot{display:flex;gap:.45rem;margin-top:.4rem;}
+.c-input{flex:1;background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:.6rem .9rem;font-family:'Share Tech Mono',monospace;font-size:.8rem;outline:none;resize:none;height:40px;transition:border-color .2s;}
+.c-input:focus{border-color:var(--green-dim);}
+.send-btn{background:var(--green-dark);border:1px solid var(--green);color:var(--green);padding:0 1.1rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;cursor:pointer;transition:all .2s;}
+.send-btn:hover{background:var(--green);color:var(--bg);}
+.send-btn:disabled{opacity:.35;cursor:not-allowed;}
+
+/* GAMES */
+.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.85rem;margin-bottom:1.3rem;}
+.g-card{border:1px solid var(--border);padding:1.1rem;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.g-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--green);transform:scaleX(0);transition:transform .3s;}
+.g-card:hover{border-color:var(--green-dim);background:rgba(0,255,65,.03);}
+.g-card:hover::after{transform:scaleX(1);}
+.g-icon{font-size:1.9rem;margin-bottom:.5rem;}
+.g-name{font-family:'Orbitron',monospace;font-size:.7rem;color:var(--green);letter-spacing:2px;margin-bottom:.25rem;}
+.g-desc{font-size:.68rem;color:var(--text-dim);line-height:1.5;}
+.g-best{margin-top:.55rem;font-size:.65rem;color:var(--yellow);}
+#game-area{border:1px solid var(--green);padding:1.3rem;margin-top:.7rem;display:none;}
+.ga-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.4rem;}
+.ga-title{font-family:'Orbitron',monospace;color:var(--green);font-size:.8rem;letter-spacing:3px;}
+.ga-score{color:var(--yellow);font-size:.83rem;}
+
+/* MEMORY */
+#mem-grid{display:grid;grid-template-columns:repeat(5,44px);gap:5px;margin:.7rem 0;}
+.mc-cell{width:44px;height:44px;border:1px solid var(--border);cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.mc-cell.lit{background:var(--green);box-shadow:0 0 12px var(--green);border-color:var(--green);}
+.mc-cell.correct{background:rgba(0,229,255,.3);border-color:var(--cyan);}
+.mc-cell.wrong{background:rgba(255,0,60,.3);border-color:var(--red);}
+
+/* SUDOKU */
+#sudoku-board{display:grid;grid-template-columns:repeat(9,38px);gap:1px;background:var(--green-dim);border:2px solid var(--green);margin:.7rem 0;width:fit-content;}
+.sc{width:38px;height:38px;background:var(--bg2);border:none;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:.95rem;text-align:center;outline:none;cursor:pointer;transition:background .15s;}
+.sc:focus{background:rgba(0,255,65,.12);}
+.sc.given{color:var(--green);font-weight:bold;cursor:not-allowed;}
+.sc.err{color:var(--red);background:rgba(255,0,60,.12);}
+.sc.correct{color:var(--cyan);}
+.sc.box-right{border-right:2px solid var(--green-dim);}
+.sc.box-bottom{border-bottom:2px solid var(--green-dim);}
+.su-btns{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;}
+
+/* CHESS */
+#chess-board{display:grid;grid-template-columns:repeat(8,52px);border:2px solid var(--green-dim);width:fit-content;margin:.7rem 0;}
+.sq{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:1.7rem;cursor:pointer;transition:all .15s;position:relative;user-select:none;}
+.sq.light{background:#1a2e1a;}
+.sq.dark{background:#0a1a0a;}
+.sq.sel{background:rgba(0,255,65,.3)!important;box-shadow:inset 0 0 0 2px var(--green);}
+.sq.move{background:rgba(0,229,255,.2)!important;}
+.sq.move::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:rgba(0,229,255,.5);}
+.sq:hover{background:rgba(0,255,65,.1)!important;}
+.ch-status{font-size:.78rem;color:var(--cyan);margin:.5rem 0;min-height:1.2em;}
+.ch-captured{font-size:1.1rem;margin:.3rem 0;min-height:1.5em;letter-spacing:2px;}
+
+/* DETECTIVE */
+.det-scene{background:var(--bg2);border:1px solid var(--purple);padding:1.2rem;margin-bottom:1rem;font-size:.8rem;line-height:1.8;color:var(--text);}
+.det-scene .scene-title{font-family:'Orbitron',monospace;color:var(--purple);font-size:.75rem;letter-spacing:3px;margin-bottom:.7rem;}
+.det-clues{display:flex;flex-direction:column;gap:.4rem;margin-bottom:1rem;}
+.clue-item{font-size:.75rem;padding:.4rem .8rem;border-left:2px solid var(--yellow);color:var(--text-dim);}
+.det-foot{display:flex;gap:.5rem;}
+.det-input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;font-family:'Share Tech Mono',monospace;font-size:.78rem;outline:none;}
+.det-input:focus{border-color:var(--purple);}
+.det-send{background:rgba(191,95,255,.1);border:1px solid var(--purple);color:var(--purple);padding:0 1rem;font-family:'Share Tech Mono',monospace;font-size:.75rem;cursor:pointer;transition:all .2s;}
+.det-send:hover{background:var(--purple);color:var(--bg);}
+.det-msg{font-size:.78rem;line-height:1.75;margin-bottom:.7rem;padding:.5rem .8rem;border-left:2px solid;}
+.det-msg.user-m{border-color:var(--cyan);color:var(--cyan);}
+.det-msg.ai-m{border-color:var(--purple);color:var(--text);}
+.det-msg.solved{border-color:var(--green);color:var(--green);background:rgba(0,255,65,.06);}
+
+/* MUSIC */
+.music-cats{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.mcat{background:transparent;border:1px solid var(--border);color:var(--text-dim);padding:.3rem .8rem;font-family:'Share Tech Mono',monospace;font-size:.7rem;cursor:pointer;transition:all .2s;}
+.mcat.active,.mcat:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,.06);}
+.music-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.8rem;}
+.music-card{border:1px solid var(--border);padding:1rem;transition:all .2s;cursor:pointer;text-decoration:none;display:block;}
+.music-card:hover{border-color:var(--cyan);background:rgba(0,229,255,.04);transform:translateY(-2px);}
+.mc-emoji{font-size:2rem;margin-bottom:.5rem;}
+.mc-title{font-size:.78rem;color:var(--cyan);margin-bottom:.25rem;}
+.mc-desc{font-size:.68rem;color:var(--text-dim);line-height:1.5;}
+.mc-tag{display:inline-block;font-size:.6rem;border:1px solid var(--green-dim);color:var(--green-dim);padding:.08rem .4rem;margin-top:.4rem;}
+.music-tip{background:rgba(255,224,0,.05);border:1px solid rgba(255,224,0,.2);padding:1rem;margin-bottom:1.2rem;font-size:.76rem;color:var(--yellow);line-height:1.7;}
+
+/* LEARN */
+.learn-form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;}
+.fg{display:flex;flex-direction:column;gap:.3rem;}
+.fg label{font-size:.62rem;color:var(--text-dim);letter-spacing:2px;}
+.fg.full{grid-column:1/-1;}
+.learn-out{margin-top:1rem;}
+.week-block{margin-bottom:1.5rem;}
+.week-head{font-family:'Orbitron',monospace;font-size:.72rem;color:var(--yellow);letter-spacing:3px;margin-bottom:.7rem;padding:.4rem .8rem;background:rgba(255,224,0,.05);border-left:2px solid var(--yellow);}
+.lesson-item{display:flex;gap:.8rem;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--border);}
+.l-num{font-size:.75rem;color:var(--green-dim);width:28px;flex-shrink:0;margin-top:2px;}
+.l-info{flex:1;}
+.l-title{font-size:.8rem;color:var(--text);margin-bottom:.2rem;}
+.l-meta{font-size:.65rem;color:var(--text-dim);}
+.l-link{font-size:.68rem;color:var(--cyan);text-decoration:none;border:1px solid rgba(0,229,255,.3);padding:.12rem .5rem;margin-top:.35rem;display:inline-block;transition:all .2s;}
+.l-link:hover{background:rgba(0,229,255,.1);border-color:var(--cyan);}
+.sched-time-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.7rem;margin-bottom:1.2rem;}
+.sched-time-card{border:1px solid var(--border);padding:.9rem;}
+.stc-label{font-size:.62rem;color:var(--text-dim);letter-spacing:2px;margin-bottom:.4rem;}
+.stc-val{font-size:1.6rem;font-family:'VT323',monospace;color:var(--green);}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.8rem;margin-bottom:1.6rem;}
+.stat-card{border:1px solid var(--border);padding:1.1rem;text-align:center;}
+.sv{font-family:'VT323',monospace;font-size:2.8rem;line-height:1;color:var(--green);text-shadow:0 0 10px rgba(0,255,65,.3);}
+.sl{font-size:.6rem;color:var(--text-dim);letter-spacing:2px;margin-top:.2rem;}
+.ach-list{display:flex;flex-direction:column;gap:.5rem;}
+.ach{display:flex;align-items:center;gap:.85rem;padding:.7rem .9rem;border:1px solid var(--border);opacity:.3;transition:opacity .4s;}
+.ach.unlocked{opacity:1;border-color:var(--green-dim);}
+.a-icon{font-size:1.2rem;}
+.a-name{font-size:.73rem;color:var(--green);}
+.a-desc{font-size:.63rem;color:var(--text-dim);}
+
+/* TOAST */
+#toast{position:fixed;bottom:1.6rem;right:1.6rem;background:var(--bg2);border:1px solid var(--green);box-shadow:0 0 20px rgba(0,255,65,.25);padding:.65rem 1rem;font-size:.75rem;color:var(--green);z-index:9900;opacity:0;transform:translateY(8px);transition:all .3s;pointer-events:none;max-width:280px;}
+#toast.show{opacity:1;transform:none;}
+#toast.cyan{border-color:var(--cyan);color:var(--cyan);}
+#toast.purple{border-color:var(--purple);color:var(--purple);}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .layout{grid-template-columns:1fr;}
+  .sidebar{flex-direction:row;overflow-x:auto;padding:.4rem;border-right:none;border-bottom:1px solid var(--border);}
+  .sb-sec,.sb-streak{display:none;}
+  .nav-btn{flex-direction:column;gap:.1rem;font-size:.56rem;padding:.35rem .45rem;white-space:nowrap;}
+  .nav-btn::before{display:none;}
+  .learn-form{grid-template-columns:1fr;}
+  #chess-board{grid-template-columns:repeat(8,40px);}
+  .sq{width:40px;height:40px;font-size:1.35rem;}
+  #sudoku-board{grid-template-columns:repeat(9,32px);}
+  .sc{width:32px;height:32px;font-size:.82rem;}
+}
+</style>
+</head>
+<body>
+<canvas id="mc"></canvas>
+
+<!-- BOOT -->
+<div id="boot">
+  <div class="boot-logo">PARASKEVA</div>
+  <div class="boot-sub">◈ AI LEARNING COMPANION v3.0 ◈</div>
+  <div class="boot-log" id="boot-log"></div>
+  <div class="boot-progress"><div class="boot-bar" id="boot-bar"></div></div>
+</div>
+
+<!-- API MODAL -->
+<div id="api-modal">
+  <div class="modal-box">
+    <div class="modal-title">◈ GROQ API KEY ◈</div>
+    <div class="modal-desc">
+      <span style="color:var(--green)">✓ უფასო &nbsp;✓ საქართველოდან მუშაობს &nbsp;✓ ბარათი არ სჭირდება</span><br><br>
+      1. გადადი → <a href="https://console.groq.com/keys" target="_blank"><strong>console.groq.com/keys</strong></a><br>
+      2. Google/GitHub-ით შედი (30 წამი)<br>
+      3. <strong style="color:var(--cyan)">"Create API Key"</strong> დააჭირე<br>
+      4. <span class="warn">gsk_...</span>-ით key დააკოპირე და ჩასვი<br><br>
+      <span class="warn">⚠ Key ინახება browser-ში. ერთხელ შეიყვანე — შემდეგ აღარ მოგთხოვს!</span>
+    </div>
+    <input type="password" class="t-input" id="api-inp" placeholder="gsk_...">
+    <div id="api-err" style="color:var(--red);font-size:.7rem;min-height:1.1rem;margin-top:.4rem;"></div>
+    <button class="btn" onclick="saveKey()" style="margin-top:.8rem;">► INITIALIZE & REMEMBER</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="header">
+    <div class="h-logo">◈ PARA<span>SKEVA</span>.AI</div>
+    <div class="h-right">
+      <span><span class="status-dot"></span><span id="h-status">ONLINE</span></span>
+      <span class="h-time" id="h-time">--:--:--</span>
+      <span class="h-xp">⚡ <span id="h-xp">0</span> XP</span>
+      <span id="h-usage" style="font-size:.68rem;color:var(--cyan);">⏱ <span id="usage-disp">3:00</span></span>
+      <button class="btn btn-sm" id="lang-btn" onclick="toggleLang()" style="margin-top:0;padding:.22rem .7rem;font-size:.66rem;border-color:var(--cyan);color:var(--cyan);">🌐 ENG</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <div class="sb-sec">MAIN</div>
+      <button class="nav-btn active" onclick="nav('chat')" id="n-chat"><span class="n-icon">◉</span>CHAT</button>
+      <button class="nav-btn" onclick="nav('games')" id="n-games"><span class="n-icon">▣</span>GAMES</button>
+      <button class="nav-btn" onclick="nav('detective')" id="n-detective"><span class="n-icon">◈</span>DETECTIVE</button>
+      <div class="sb-sec">TOOLS</div>
+      <button class="nav-btn" onclick="nav('music')" id="n-music"><span class="n-icon">♪</span>MUSIC</button>
+      <button class="nav-btn" onclick="nav('motivate')" id="n-motivate"><span class="n-icon">💪</span>MOTIVATION</button>
+      <button class="nav-btn" onclick="nav('learn')" id="n-learn"><span class="n-icon">◐</span>LEARN</button>
+      <button class="nav-btn" onclick="nav('stats')" id="n-stats"><span class="n-icon">★</span>STATS</button>
+      <button class="nav-btn" onclick="nav('prizes')" id="n-prizes"><span class="n-icon">🏆</span>PRIZES</button>
+      <div class="sb-streak">
+        <div class="streak-n" id="sb-streak">0</div>
+        <div class="streak-l">🔥 STREAK</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ═══ CHAT ═══ -->
+      <div class="panel active" id="p-chat">
+        <div class="sec-head">
+          <div class="sec-title">PARASKEVA CHAT</div>
+          <div class="sec-badge">AI ACTIVE</div>
+        </div>
+        <div class="chat-wrap">
+          <div class="chat-msgs" id="chat-msgs">
+            <div class="msg ai">
+              <div class="m-av">◈</div>
+              <div>
+                <div class="m-name">PARASKEVA.AI</div>
+                <div class="m-text">გამარჯობა! 🤖 მე პარასკევა ვარ — v3.0!
+
+ახალი ფუნქციები:
+🎮 GAMES → სუდოკო + ჭადრაკი ბოტთან
+🔍 DETECTIVE → AI-გენერირებული გამოცანები
+🎵 MUSIC → სასწავლო მუსიკა
+📚 LEARN → სასწავლო პლანი + ვიდეოები
+
+► რა გჭირდება დღეს?</div>
+              </div>
+            </div>
+          </div>
+          <div class="quick-btns">
+            <button class="qb" onclick="qmsg('💪 მომეცი მოტივაცია!')">💪 მოტივაცია</button>
+            <button class="qb" onclick="qmsg('🎯 დამალახვე დავალება')">🎯 დავალება</button>
+            <button class="qb" onclick="qmsg('🧠 ლოგიკის გამოცანა მომეცი')">🧠 გამოცანა</button>
+            <button class="qb" onclick="qmsg('📚 სწავლის საუკეთესო მეთოდი?')">📚 მეთოდი</button>
+            <button class="qb" onclick="qmsg('😴 ძალიან ვზარმაცობ, დამეხმარე!')">😴 ზარმაცობა</button>
+            <button class="qb" onclick="qmsg('🔥 5 წუთში რა შემიძლია ვისწავლო?')">🔥 5 წუთი</button>
+          </div>
+          <div class="chat-foot">
+            <textarea class="c-input" id="c-inp" placeholder="შეტყობინება..." onkeydown="ckdown(event)"></textarea>
+            <button class="send-btn" id="sbtn" onclick="send()">►</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ GAMES ═══ -->
+      <div class="panel" id="p-games">
+        <div class="sec-head">
+          <div class="sec-title">MIND GAMES</div>
+          <div class="sec-badge">MENTAL TRAINING</div>
+        </div>
+        <div class="games-grid">
+          <div class="g-card" onclick="startGame('memory')">
+            <div class="g-icon">◉</div>
+            <div class="g-name">MATRIX MEMORY</div>
+            <div class="g-desc">დაიმახსოვრე განათებული უჯრები. დონე ყოველ ჯერზე იზრდება.</div>
+            <div class="g-best">Best: <span id="b-memory">0</span> pts</div>
+          </div>
+          <div class="g-card" onclick="startGame('sudoku')">
+            <div class="g-icon">⊞</div>
+            <div class="g-name">SUDOKU</div>
+            <div class="g-desc">9×9 ბადე — შეავსე ციფრები ისე, რომ გამეორება არ იყოს.</div>
+            <div class="g-best">Solved: <span id="b-sudoku">0</span></div>
+          </div>
+          <div class="g-card" onclick="startGame('chess')">
+            <div class="g-icon">♟</div>
+            <div class="g-name">CHESS vs AI</div>
+            <div class="g-desc">ბოტთან ჭადრაკი. AI-ი ჭკვიანია — ყურადღება!</div>
+            <div class="g-best">Wins: <span id="b-chess">0</span></div>
+          </div>
+        </div>
+        <div id="game-area">
+          <div class="ga-head">
+            <div class="ga-title" id="ga-title">GAME</div>
+            <div class="ga-score" id="ga-score-wrap">SCORE: <span id="ga-score">0</span></div>
+            <button class="btn btn-r btn-sm" onclick="exitGame()">✕ EXIT</button>
+          </div>
+          <div id="game-cnt"></div>
+        </div>
+      </div>
+
+      <!-- ═══ DETECTIVE ═══ -->
+      <div class="panel" id="p-detective">
+        <div class="sec-head">
+          <div class="sec-title">DETECTIVE MODE</div>
+          <div class="sec-badge sec-badge-p">AI MYSTERY</div>
+          <div style="margin-left:auto;display:flex;gap:.4rem;align-items:center;">
+            <span style="font-size:.65rem;color:var(--text-dim)">QUESTIONS: <span id="det-q-count" style="color:var(--cyan)">0</span></span>
+            <span style="font-size:.65rem;color:var(--text-dim);margin-left:.8rem">XP: <span id="det-xp-earn" style="color:var(--yellow)">+0</span></span>
+          </div>
+        </div>
+
+        <!-- START SCREEN -->
+        <div id="det-main">
+          <div style="text-align:center;padding:2rem 0 1rem;">
+            <div style="font-family:'VT323',monospace;font-size:5rem;color:var(--purple);text-shadow:0 0 30px var(--purple),0 0 60px rgba(191,95,255,.3);line-height:1;">🔍</div>
+            <div style="font-family:'Orbitron',monospace;color:var(--purple);font-size:.9rem;letter-spacing:4px;margin:.6rem 0 .4rem;" id="det-agency-title">DETECTIVE AGENCY</div>
+            <div style="color:var(--text-dim);font-size:.75rem;line-height:1.9;max-width:480px;margin:0 auto 1.4rem;" id="det-agency-desc">
+              ► AI გენერირებს სრულ გამოძიებას<br>
+              ► 4 ეჭვმიტანილი — ყველა ცალ-ცალკე დაკითხე<br>
+              ► მოაგროვე მტკიცებულებები, ამხილე დამნაშავე<br>
+              ► რაც ნაკლებ კითხვას დასვამ — მით მეტი XP
+            </div>
+            <!-- Crime Type Selector -->
+            <div style="margin-bottom:1.2rem;">
+              <div style="font-size:.62rem;color:var(--text-dim);letter-spacing:3px;margin-bottom:.7rem;" id="det-type-label">▣ CRIME TYPE</div>
+              <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;" id="det-type-btns">
+                <button class="btn btn-sm btn-p det-type-btn" id="dtb-murder" onclick="setDetType('murder')" style="border-color:var(--red);color:var(--red);">🔪 MURDER</button>
+                <button class="btn btn-sm btn-p det-type-btn" id="dtb-theft" onclick="setDetType('theft')" style="border-color:var(--cyan);color:var(--cyan);">💼 THEFT</button>
+                <button class="btn btn-sm btn-p det-type-btn" id="dtb-poison" onclick="setDetType('poison')" style="border-color:var(--yellow);color:var(--yellow);">☠ POISON</button>
+                <button class="btn btn-sm btn-p det-type-btn" id="dtb-missing" onclick="setDetType('missing')" style="border-color:var(--purple);color:var(--purple);">👁 MISSING</button>
+              </div>
+              <div style="margin-top:.6rem;font-size:.68rem;color:var(--cyan);" id="det-type-selected">✓ MURDER არჩეულია</div>
+            </div>
+            <div style="display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-p" onclick="newMystery('easy')" id="det-easy-btn">► EASY CASE</button>
+              <button class="btn btn-p" onclick="newMystery('hard')" style="border-color:var(--red);color:var(--red);" id="det-hard-btn">► HARD CASE</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- GAME SCREEN -->
+        <div id="det-game" style="display:none;">
+
+          <!-- CASE HEADER -->
+          <div style="display:flex;gap:.5rem;margin-bottom:.9rem;flex-wrap:wrap;align-items:center;">
+            <div style="font-family:'Orbitron',monospace;font-size:.78rem;color:var(--purple);letter-spacing:2px;" id="det-case-title">CASE #001</div>
+            <div style="margin-left:auto;display:flex;gap:.4rem;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-p" onclick="detAccuse()">⚖ ACCUSE</button>
+              <button class="btn btn-sm btn-r" onclick="detGiveUp()">✕ GIVE UP</button>
+              <button class="btn btn-sm" onclick="newMystery()">↺ NEW</button>
+            </div>
+          </div>
+
+          <!-- CRIME SCENE CARD -->
+          <div class="det-scene" id="det-scene-box">
+            <div class="scene-title">🔍 CRIME SCENE</div>
+            <div id="det-scene-text"><div style="color:var(--text-dim);animation:blink 1s infinite">◈ AI ქმნის საქმეს...</div></div>
+          </div>
+
+          <!-- TWO COLUMN: EVIDENCE + SUSPECTS -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.9rem;" id="det-cols">
+
+            <!-- EVIDENCE -->
+            <div>
+              <div style="font-size:.62rem;color:var(--yellow);letter-spacing:3px;margin-bottom:.5rem;">▣ EVIDENCE</div>
+              <div id="det-evidence-list"></div>
+            </div>
+
+            <!-- SUSPECTS -->
+            <div>
+              <div style="font-size:.62rem;color:var(--purple);letter-spacing:3px;margin-bottom:.5rem;">▣ SUSPECTS</div>
+              <div id="det-suspect-cards"></div>
+            </div>
+          </div>
+
+          <!-- INTERROGATION BOX -->
+          <div id="det-interrogation" style="display:none;border:1px solid var(--purple);padding:1rem;background:rgba(191,95,255,.04);margin-bottom:.8rem;">
+            <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem;">
+              <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--purple);letter-spacing:2px;" id="det-intr-name">INTERROGATING: —</div>
+              <button class="btn btn-sm" onclick="closeInterrogation()" style="margin-left:auto;margin-top:0;border-color:var(--border);color:var(--text-dim);padding:.15rem .5rem;">✕ CLOSE</button>
+            </div>
+            <div style="font-size:.65rem;color:var(--text-dim);margin-bottom:.6rem;" id="det-intr-role"></div>
+            <!-- Quick question buttons -->
+            <div id="det-quick-qs" style="display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.6rem;"></div>
+            <!-- Chat log for this witness -->
+            <div id="det-intr-log" style="max-height:200px;overflow-y:auto;margin-bottom:.6rem;display:flex;flex-direction:column;gap:.4rem;"></div>
+            <div class="det-foot">
+              <input type="text" class="det-input" id="det-inp" placeholder="დასვი კითხვა..." onkeydown="if(event.key==='Enter')detSend()">
+              <button class="det-send" id="det-send-btn" onclick="detSend()">► ASK</button>
+            </div>
+          </div>
+
+          <!-- GENERAL CHAT (narrator) -->
+          <div style="border:1px solid var(--border);padding:.8rem;margin-bottom:.6rem;">
+            <div style="font-size:.62rem;color:var(--green);letter-spacing:2px;margin-bottom:.5rem;">▣ CASE NOTES</div>
+            <div id="det-chat-log" style="max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:.3rem;"></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ═══ MUSIC ═══ -->
+      <div class="panel" id="p-music">
+        <div class="sec-head">
+          <div class="sec-title">FOCUS MUSIC</div>
+          <div class="sec-badge sec-badge-c">MOTIVATION</div>
+        </div>
+        <div class="music-tip">
+          🎵 მუსიკა სწავლის დროს: კვლევები ადასტურებს რომ ინსტრუმენტული და Lo-Fi მუსიკა კონცენტრაციას 23%-ით ზრდის. ტექსტიანი სიმღერები კი ყურადღებას ანაწილებს. ყურსასმენი + ბიინაურული ბიტები = FOCUS MODE ON ⚡
+        </div>
+        <div class="music-cats">
+          <button class="mcat active" onclick="filterMusic('all',this)">ALL</button>
+          <button class="mcat" onclick="filterMusic('lofi',this)">LO-FI</button>
+          <button class="mcat" onclick="filterMusic('focus',this)">DEEP FOCUS</button>
+          <button class="mcat" onclick="filterMusic('energy',this)">ENERGY</button>
+          <button class="mcat" onclick="filterMusic('nature',this)">NATURE</button>
+          <button class="mcat" onclick="filterMusic('classical',this)">CLASSICAL</button>
+        </div>
+        <div class="music-grid" id="music-grid"></div>
+      </div>
+
+      <!-- ═══ MOTIVATION ═══ -->
+      <div class="panel" id="p-motivate">
+        <div class="sec-head">
+          <div class="sec-title">💪 MOTIVATION ENGINE</div>
+          <div class="sec-badge sec-badge-y">AI POWERED</div>
+        </div>
+        <!-- Quick boost cards -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.7rem;margin-bottom:1.2rem;" id="motiv-cards">
+          <div class="g-card" onclick="motivBoost('energy')"><div class="g-icon">🔥</div><div class="g-name">ENERGY BOOST</div><div class="g-desc">დაუყოვნებელი მოტივაცია — ახლავე!</div></div>
+          <div class="g-card" onclick="motivBoost('focus')"><div class="g-icon">🎯</div><div class="g-name">DEEP FOCUS</div><div class="g-desc">ყურადღების კონცენტრირება 25 წუთზე</div></div>
+          <div class="g-card" onclick="motivBoost('confidence')"><div class="g-icon">⚡</div><div class="g-name">CONFIDENCE</div><div class="g-desc">თვითრწმენის გასაძლიერებელი</div></div>
+          <div class="g-card" onclick="motivBoost('study')"><div class="g-icon">📚</div><div class="g-name">STUDY MODE</div><div class="g-desc">სწავლისთვის განწყობა — ჩააქტიურე!</div></div>
+          <div class="g-card" onclick="motivBoost('lazy')"><div class="g-icon">😤</div><div class="g-name">ANTI-LAZY</div><div class="g-desc">ზარმაცობა? AI-ი გაგამხელს!</div></div>
+          <div class="g-card" onclick="motivBoost('goal')"><div class="g-icon">🏆</div><div class="g-name">GOAL SETTER</div><div class="g-desc">მიზნის განსაზღვრა + 30-დღიანი გეგმა</div></div>
+        </div>
+
+        <!-- Pomodoro Timer -->
+        <div style="border:1px solid var(--border);padding:1.1rem;margin-bottom:1.2rem;">
+          <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--cyan);letter-spacing:3px;margin-bottom:.9rem;">⏱ POMODORO TIMER</div>
+          <div style="text-align:center;">
+            <div style="font-family:'VT323',monospace;font-size:5rem;color:var(--green);text-shadow:0 0 20px var(--green);line-height:1;margin-bottom:.6rem;" id="pomo-display">25:00</div>
+            <div style="font-size:.68rem;color:var(--text-dim);margin-bottom:.8rem;" id="pomo-status">FOCUS SESSION • 25 MIN</div>
+            <div style="display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;">
+              <button class="btn btn-sm" id="pomo-btn" onclick="pomoToggle()">► START</button>
+              <button class="btn btn-sm" onclick="pomoReset()" style="border-color:var(--border);color:var(--text-dim);">↺ RESET</button>
+              <button class="btn btn-sm btn-c" onclick="pomoSet(5)">5 MIN BREAK</button>
+              <button class="btn btn-sm btn-c" onclick="pomoSet(25)">25 MIN FOCUS</button>
+            </div>
+            <div style="margin-top:.8rem;font-size:.68rem;color:var(--text-dim);">Pomodoros today: <span id="pomo-count" style="color:var(--yellow)">0</span> 🍅</div>
+          </div>
+        </div>
+
+        <!-- AI Motivation Output -->
+        <div id="motiv-out" style="display:none;border:1px solid var(--border);padding:1rem;background:rgba(0,255,65,.03);">
+          <div style="font-size:.62rem;color:var(--green);letter-spacing:2px;margin-bottom:.6rem;">▣ PARASKEVA SAYS:</div>
+          <div id="motiv-text" style="font-size:.83rem;line-height:1.9;color:var(--text);white-space:pre-wrap;"></div>
+          <div style="display:flex;gap:.4rem;margin-top:.8rem;flex-wrap:wrap;">
+            <button class="btn btn-sm" onclick="copyMotiv()">⧉ COPY</button>
+            <button class="btn btn-sm btn-c" onclick="document.getElementById('motiv-out').style.display='none'">✕ CLOSE</button>
+          </div>
+        </div>
+
+        <!-- Daily Tasks -->
+        <div style="border:1px solid var(--yellow);padding:1.1rem;margin-bottom:1.2rem;background:rgba(255,224,0,.02);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;flex-wrap:wrap;gap:.4rem;">
+            <div style="font-family:'Orbitron',monospace;font-size:.7rem;color:var(--yellow);letter-spacing:3px;">📋 DAILY TASKS</div>
+            <div style="display:flex;gap:.4rem;">
+              <button class="btn btn-y btn-sm" onclick="genDailyTasks()" style="margin-top:0;">&#8634; AI Generate</button>
+              <button class="btn btn-sm" onclick="resetDailyTasks()" style="margin-top:0;border-color:var(--border);color:var(--text-dim);">&#8635; Reset</button>
+            </div>
+          </div>
+          <div style="font-size:.65rem;color:var(--text-dim);margin-bottom:.7rem;">&#9650; Easy=5XP &nbsp; &#9654; Medium=7XP &nbsp; &#9670; Hard=10XP &nbsp; — ყოველდღე ახლდება</div>
+          <div id="daily-tasks-list"></div>
+        </div>
+
+        <!-- Custom motivation prompt -->
+        <div style="margin-top:1rem;border:1px solid var(--border);padding:1rem;">
+          <div style="font-size:.62rem;color:var(--text-dim);letter-spacing:2px;margin-bottom:.6rem;">▣ PERSONAL BOOST</div>
+          <textarea class="t-input" id="motiv-custom" rows="2" style="width:100%;resize:none;" placeholder="მომეცი მოტივაცია... (მაგ: ვზარმაცობ, გამოცდა მაქვს ხვალ, თავი ცუდად მიგრძნია)"></textarea>
+          <button class="btn btn-sm" onclick="motivCustom()" style="margin-top:.5rem;">► GET BOOST</button>
+        </div>
+      </div>
+
+      <!-- ═══ LEARN ═══ -->
+      <div class="panel" id="p-learn">
+        <div class="sec-head">
+          <div class="sec-title">LEARNING PLAN</div>
+          <div class="sec-badge sec-badge-y">AI POWERED</div>
+        </div>
+        <div class="sched-time-grid" id="sched-display" style="display:none;"></div>
+        <div class="learn-form">
+          <div class="fg"><label>📚 სასწავლო დრო (დასაწყისი)</label><input type="time" class="t-input" id="l-start" value="19:00"></div>
+          <div class="fg"><label>⏱ სწავლის ხანგრძლივობა</label>
+            <select class="t-input" id="l-dur">
+              <option value="1">1 საათი</option>
+              <option value="2" selected>2 საათი</option>
+              <option value="3">3 საათი</option>
+              <option value="4">4+ საათი</option>
+            </select>
+          </div>
+          <div class="fg"><label>💪 ვარჯიშის დრო</label><input type="time" class="t-input" id="l-gym" value="07:30"></div>
+          <div class="fg"><label>💤 ძილის დრო</label><input type="time" class="t-input" id="l-sleep" value="23:30"></div>
+          <div class="fg full"><label>🎯 რა გინდა ისწავლო? (დაწერე საგნები)</label>
+            <input type="text" class="t-input" id="l-subj" placeholder="მაგ: Python, UI/UX Design, ინგლისური, მათემატიკა">
+          </div>
+          <div class="fg"><label>📅 რამდენი კვირა?</label>
+            <select class="t-input" id="l-weeks">
+              <option value="2">2 კვირა</option>
+              <option value="4" selected>4 კვირა</option>
+              <option value="8">8 კვირა</option>
+            </select>
+          </div>
+          <div class="fg"><label>🔥 დონე</label>
+            <select class="t-input" id="l-level">
+              <option value="დამწყები">დამწყები</option>
+              <option value="საშუალო" selected>საშუალო</option>
+              <option value="მოწინავე">მოწინავე</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn" onclick="genLearn()">► GENERATE LEARNING PATH</button>
+        <div id="learn-out" style="margin-top:1.2rem;"></div>
+      </div>
+
+      <!-- ═══ STATS ═══ -->
+      <div class="panel" id="p-stats">
+        <div class="sec-head">
+          <div class="sec-title">STATISTICS</div>
+          <div class="sec-badge">PROGRESS TRACKER</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="sv" id="st-xp">0</div><div class="sl">TOTAL XP</div></div>
+          <div class="stat-card"><div class="sv" id="st-str">0</div><div class="sl">🔥 STREAK</div></div>
+          <div class="stat-card"><div class="sv" id="st-msg">0</div><div class="sl">MESSAGES</div></div>
+          <div class="stat-card"><div class="sv" id="st-gm">0</div><div class="sl">GAMES</div></div>
+          <div class="stat-card"><div class="sv" id="st-det">0</div><div class="sl">MYSTERIES</div></div>
+          <div class="stat-card"><div class="sv" id="st-days">0</div><div class="sl">DAYS ACTIVE</div></div>
+        </div>
+        <div class="sec-head" style="margin-top:1.3rem;"><div class="sec-title">ACHIEVEMENTS</div></div>
+        <div class="ach-list">
+          <div class="ach" id="a-fc"><div class="a-icon">◉</div><div><div class="a-name">FIRST CONTACT</div><div class="a-desc">პარასკევასთან პირველი საუბარი</div></div></div>
+          <div class="ach" id="a-10m"><div class="a-icon">◈</div><div><div class="a-name">COMMUNICATOR</div><div class="a-desc">10 შეტყობინება</div></div></div>
+          <div class="ach" id="a-gm"><div class="a-icon">▣</div><div><div class="a-name">GAMER</div><div class="a-desc">პირველი თამაში</div></div></div>
+          <div class="ach" id="a-su"><div class="a-icon">⊞</div><div><div class="a-name">SUDOKU MASTER</div><div class="a-desc">სუდოკო გადახდე</div></div></div>
+          <div class="ach" id="a-ch"><div class="a-icon">♟</div><div><div class="a-name">CHESS CHAMPION</div><div class="a-desc">ჭადრაკში ბოტი დაამარცხე</div></div></div>
+          <div class="ach" id="a-det"><div class="a-icon">🔍</div><div><div class="a-name">DETECTIVE</div><div class="a-desc">პირველი გამოცანა გადახდე</div></div></div>
+          <div class="ach" id="a-str"><div class="a-icon">🔥</div><div><div class="a-name">CONSISTENT</div><div class="a-desc">3-დღიანი streak</div></div></div>
+          <div class="ach" id="a-xp"><div class="a-icon">⚡</div><div><div class="a-name">XP HUNTER</div><div class="a-desc">200+ XP</div></div></div>
+        </div>
+        <button class="btn btn-r" onclick="resetAll()" style="margin-top:1.8rem;">⚠ RESET ALL DATA</button>
+      </div>
+
+      <!-- ═══ PRIZES ═══ -->
+      <div class="panel" id="p-prizes">
+        <div class="sec-head">
+          <div class="sec-title">🏆 PRIZE SHOP</div>
+          <div class="sec-badge sec-badge-y">XP REWARDS</div>
+        </div>
+
+        <!-- PREMIUM STATUS BANNER -->
+        <div id="premium-banner-active" style="display:none;background:rgba(0,255,65,.06);border:1px solid var(--green);padding:1rem;margin-bottom:1.2rem;font-size:.8rem;color:var(--green);line-height:1.8;">
+          ✅ <strong>PREMIUM PARASKEVA — ACTIVE</strong><br>
+          <span style="color:var(--text-dim);font-size:.72rem;">ულიმიტო გამოყენება ✓ &nbsp; ლიდერბორდი ✓ &nbsp; ყველა ფიჩერი განბლოკილია ✓</span>
+        </div>
+
+        <!-- PREMIUM BUY CARD -->
+        <div id="premium-buy-card" style="border:2px solid var(--yellow);padding:1.3rem;margin-bottom:1.4rem;background:rgba(255,224,0,.03);">
+          <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:.8rem;">
+            <div style="font-size:2.2rem;">⚡</div>
+            <div>
+              <div style="font-family:'Orbitron',monospace;font-size:.85rem;color:var(--yellow);letter-spacing:3px;">PREMIUM PARASKEVA</div>
+              <div style="font-size:.68rem;color:var(--text-dim);margin-top:.2rem;">ულიმიტო + ლიდერბორდი + ყველა ფიჩერი — <strong style="color:var(--yellow)">20₾</strong></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:1rem;font-size:.72rem;color:var(--text-dim);">
+            <div>✓ ულიმიტო გამოყენება</div>
+            <div>✓ ლიდერბორდი</div>
+            <div>✓ ყველა ფიჩერი</div>
+            <div>✓ მომავალი განახლებები</div>
+          </div>
+
+          <!-- STEP 1: IBAN TRANSFER -->
+          <div style="border:1px solid var(--border);padding:.9rem;margin-bottom:.7rem;">
+            <div style="font-size:.62rem;color:var(--green);letter-spacing:3px;margin-bottom:.7rem;">▣ STEP 1 — გადარიცხე 20₾</div>
+
+            <!-- IBAN CARD -->
+            <div style="background:rgba(0,255,65,.04);border:1px solid var(--green-dim);padding:.9rem;margin-bottom:.7rem;">
+              <div style="font-size:.6rem;color:var(--text-dim);letter-spacing:2px;margin-bottom:.3rem;">🏦 TBC BANK — IBAN</div>
+              <div style="font-size:1rem;color:var(--green);font-family:'Orbitron',monospace;letter-spacing:2px;margin-bottom:.5rem;" id="iban-display">GE87TB7713045068100047</div>
+              <div style="font-size:.68rem;color:var(--text-dim);margin-bottom:.5rem;">მიმღები: <span style="color:var(--text)">Paraskeva.AI</span> &nbsp;|&nbsp; თანხა: <span style="color:var(--yellow)">20₾</span> &nbsp;|&nbsp; დანიშნულება: <span style="color:var(--cyan)">Premium</span></div>
+              <button class="btn btn-sm" onclick="copyIBAN()" id="copy-iban-btn" style="margin-top:0;width:100%;">⧉ IBAN კოპირება</button>
+            </div>
+
+            <div style="font-size:.7rem;color:var(--text-dim);line-height:1.8;">
+              1. TBC Mobile / iBank-ში გახსენი გადარიცხვა<br>
+              2. IBAN ჩასვი → 20₾ → "Premium" დანიშნულება<br>
+              3. სქრინი გადაიღე და ატვირთე ქვემოთ ↓
+            </div>
+          </div>
+
+          <!-- STEP 2: SCREENSHOT UPLOAD -->
+          <div style="border:1px solid var(--border);padding:.9rem;">
+            <div style="font-size:.62rem;color:var(--green);letter-spacing:3px;margin-bottom:.6rem;">▣ STEP 2 — ატვირთე გადარიცხვის სქრინი</div>
+            <div style="font-size:.7rem;color:var(--text-dim);margin-bottom:.7rem;">გადარიცხვის შემდეგ TBC-დან სქრინი ატვირთე — Premium ავტომატურად გააქტიურდება!</div>
+
+            <!-- Upload area -->
+            <div id="upload-area" onclick="document.getElementById('screen-upload').click()"
+              style="border:2px dashed var(--green-dim);padding:1.5rem;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:.6rem;"
+              ondragover="event.preventDefault();this.style.borderColor='var(--green)'"
+              ondragleave="this.style.borderColor='var(--green-dim)'"
+              ondrop="handleScreenDrop(event)">
+              <div style="font-size:2rem;margin-bottom:.4rem;">📱</div>
+              <div style="font-size:.75rem;color:var(--green);">სქრინი ატვირთე</div>
+              <div style="font-size:.65rem;color:var(--text-dim);margin-top:.2rem;">დააჭირე ან გადმოათრიე</div>
+            </div>
+            <input type="file" id="screen-upload" accept="image/*" style="display:none" onchange="handleScreenUpload(this)">
+
+            <!-- Preview -->
+            <div id="screen-preview" style="display:none;margin-bottom:.6rem;">
+              <img id="screen-img" style="max-width:100%;max-height:200px;border:1px solid var(--green-dim);">
+              <div style="font-size:.68rem;color:var(--green);margin-top:.3rem;">✓ სქრინი ატვირთულია</div>
+            </div>
+
+            <button class="btn btn-y" id="confirm-pay-btn" onclick="confirmPayment()" style="width:100%;margin-top:0;display:none;">
+              ✅ გადარიცხვა დავადასტურე — Premium გააქტიურება
+            </button>
+            <div id="upload-msg" style="min-height:1.2rem;font-size:.7rem;margin-top:.4rem;"></div>
+          </div>
+        </div>
+
+        <!-- XP PROGRESS -->
+        <div style="margin-bottom:1.2rem;">
+          <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-dim);margin-bottom:.4rem;">
+            <span>XP პროგრესი (ჯილდოებისთვის)</span><span id="xp-prog-txt">0 / 50,000</span>
+          </div>
+          <div style="background:var(--bg2);border:1px solid var(--border);height:8px;">
+            <div id="xp-prog-bar" style="height:100%;background:var(--yellow);transition:width .5s;width:0%;"></div>
+          </div>
+        </div>
+
+        <!-- BOOK PRIZES GRID -->
+        <div class="sec-head" style="margin-top:.5rem;">
+          <div class="sec-title" style="font-size:.7rem;">📚 XP PRIZES</div>
+          <div class="sec-badge">BOOK REWARDS</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.8rem;margin-bottom:1.5rem;" id="prizes-grid">
+        </div>
+
+        <!-- LEADERBOARD -->
+        <div class="sec-head" style="margin-top:1rem;">
+          <div class="sec-title">🌍 LEADERBOARD</div>
+          <div class="sec-badge">GLOBAL RANKING</div>
+        </div>
+        <div id="lb-locked-msg" style="background:rgba(255,224,0,.05);border:1px solid rgba(255,224,0,.2);padding:.9rem;margin-bottom:.8rem;font-size:.75rem;color:var(--yellow);line-height:1.7;">
+          🔒 ლიდერბორდი მხოლოდ <strong>PREMIUM</strong>-ის შემდეგ ხელმისაწვდომია.<br>
+          <span style="color:var(--text-dim);font-size:.68rem;">შეიძინე Premium და შეიყვანე შენი სახელი!</span>
+        </div>
+        <div id="lb-input-wrap" style="margin-bottom:.8rem;display:flex;gap:.5rem;align-items:center;display:none;">
+          <input type="text" class="t-input" id="lb-name" placeholder="შენი სახელი და გვარი..." style="flex:1;height:38px;">
+          <button class="btn btn-y btn-sm" onclick="saveLbName()" style="margin-top:0;">✓ SAVE</button>
+        </div>
+        <div id="leaderboard-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════
+// STATE & PERSISTENCE
+// ══════════════════════════════════════════
+const HARDCODED_KEY='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';
+const S={
+  key:HARDCODED_KEY,
+  xp:lsn('pv_xp',0),
+  streak:lsn('pv_str',0),
+  msgs:lsn('pv_msgs',0),
+  games:lsn('pv_gms',0),
+  dets:lsn('pv_dets',0),
+  days:lsn('pv_days',0),
+  lastDay:ls('pv_ld',''),
+  bests:lsj('pv_bests',{memory:0,sudoku:0,chess:0}),
+  history:[],
+  lang:ls('pv_lang','ka'),
+  hasPremium:ls('pv_premium','0')==='1',
+  usageToday:lsn('pv_usage_min',0),
+  usageDate:ls('pv_usage_date','')
+};
+let detCrimeType='murder';
+function ls(k,d){return localStorage.getItem(k)||d;}
+function lsn(k,d){return parseInt(localStorage.getItem(k)||d)||0;}
+function lsj(k,d){try{return JSON.parse(localStorage.getItem(k))||d;}catch{return d;}}
+function save(){
+  localStorage.setItem('pv_xp',S.xp);
+  localStorage.setItem('pv_str',S.streak);
+  localStorage.setItem('pv_msgs',S.msgs);
+  localStorage.setItem('pv_gms',S.games);
+  localStorage.setItem('pv_dets',S.dets);
+  localStorage.setItem('pv_days',S.days);
+  localStorage.setItem('pv_ld',S.lastDay);
+  localStorage.setItem('pv_bests',JSON.stringify(S.bests));
+  localStorage.setItem('pv_lang',S.lang);
+  localStorage.setItem('pv_premium',S.hasPremium?'1':'0');
+  localStorage.setItem('pv_usage_min',S.usageToday);
+  localStorage.setItem('pv_usage_date',S.usageDate);
+}
+function addXP(n,label){
+  S.xp+=n; save();
+  document.getElementById('h-xp').textContent=S.xp;
+  if(label) toast('⚡ +'+n+' XP — '+label,'');
+  checkAchs();
+}
+function toast(msg,cls=''){
+  const t=document.getElementById('toast');
+  t.className=cls?'show '+cls:'show';
+  t.textContent=msg;
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ══════════════════════════════════════════
+// MATRIX RAIN
+// ══════════════════════════════════════════
+function initMatrix(){
+  const c=document.getElementById('mc'),x=c.getContext('2d');
+  const r=()=>{c.width=window.innerWidth;c.height=window.innerHeight;};
+  r();window.addEventListener('resize',r);
+  const ch='PARASKEVA01◈◉▣◐∑♟⊞♪★';
+  const cols=Math.floor(c.width/18);
+  const drops=Array(cols).fill(1);
+  setInterval(()=>{
+    x.fillStyle='rgba(5,9,5,0.05)';x.fillRect(0,0,c.width,c.height);
+    x.fillStyle='#00ff41';x.font='13px Share Tech Mono';
+    drops.forEach((y,i)=>{
+      x.fillText(ch[Math.floor(Math.random()*ch.length)],i*18,y*18);
+      if(y*18>c.height&&Math.random()>.975)drops[i]=0;
+      drops[i]++;
+    });
+  },60);
+}
+
+// ══════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════
+const BOOT_LINES=[
+  {t:'INITIALIZING PARASKEVA NEURAL CORE v3.0',d:120,ok:true},
+  {t:'LOADING CHESS ENGINE (MINIMAX v4)',d:280,ok:true},
+  {t:'GENERATING SUDOKU MATRIX',d:420,ok:true},
+  {t:'MOUNTING DETECTIVE AGENCY MODULE',d:560,ok:true},
+  {t:'CALIBRATING MUSIC THERAPY ENGINE',d:700,ok:true},
+  {t:'CONNECTING LEARNING PLANNER',d:840,ok:true},
+  {t:'ESTABLISHING GROQ API BRIDGE',d:980,ok:true},
+  {t:'ALL SYSTEMS ONLINE ► PARASKEVA READY',d:1150,ok:true},
+];
+function boot(){
+  initMatrix();
+  const log=document.getElementById('boot-log'),bar=document.getElementById('boot-bar');
+  BOOT_LINES.forEach((l,i)=>{
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='boot-line'+(l.ok?' ok':'');
+      el.textContent='> '+l.t;
+      log.appendChild(el);
+      bar.style.width=((i+1)/BOOT_LINES.length*100)+'%';
+    },l.d);
+  });
+  // Test API during boot
+  setTimeout(async()=>{
+    const el=document.createElement('div');
+    el.className='boot-line';
+    el.textContent='> TESTING GROQ API CONNECTION...';
+    log.appendChild(el);
+    try{
+      await callGemini('Say OK in 1 word','Respond with only: OK',10);
+      el.textContent='> GROQ API CONNECTION VERIFIED';
+      el.className='boot-line ok';
+    }catch(e){
+      el.textContent='> API WARNING: '+e.message;
+      el.style.color='var(--yellow)';
+      console.warn('API test failed:',e);
+    }
+    bar.style.width='100%';
+    setTimeout(()=>{
+      const b=document.getElementById('boot');
+      b.style.transition='opacity .5s';b.style.opacity='0';
+      setTimeout(()=>{
+        b.style.display='none';
+        showApp();
+      },500);
+    },600);
+  },1900);
+}
+function saveKey(){
+  const k=document.getElementById('api-inp').value.trim();
+  const err=document.getElementById('api-err');
+  if(!k){err.textContent='Key შეიყვანე';return;}
+  if(!k.startsWith('gsk_')){err.textContent='⚠ Groq key gsk_-ით იწყება';return;}
+  S.key=k;save();
+  document.getElementById('api-modal').style.display='none';
+  showApp();
+}
+function doLogout(){if(!confirm('LOGOUT? Key წაიშლება.'))return;localStorage.removeItem('pv_key');location.reload();}
+
+// ══════════════════════════════════════════
+// LANGUAGE SYSTEM
+// ══════════════════════════════════════════
+const T={
+  ka:{
+    online:'ONLINE',chat:'CHAT',games:'GAMES',detective:'DETECTIVE',
+    music:'MUSIC',motivation:'MOTIVATION',learn:'LEARN',stats:'STATS',prizes:'PRIZES',
+    streakLbl:'🔥 STREAK',chatTitle:'PARASKEVA CHAT',chatBadge:'AI ACTIVE',
+    gamesTitle:'MIND GAMES',detTitle:'DETECTIVE MODE',
+    musicTitle:'FOCUS MUSIC',motivTitle:'💪 MOTIVATION ENGINE',
+    learnTitle:'LEARNING PLAN',statsTitle:'STATISTICS',prizesTitle:'🏆 PRIZE SHOP',
+    chatPlaceholder:'შეტყობინება...',
+    langBtn:'🌐 ENG',
+    detAgencyDesc:'► AI გენერირებს სრულ გამოძიებას<br>► 4 ეჭვმიტანილი — ყველა ცალ-ცალკე დაკითხე<br>► მოაგროვე მტკიცებულებები, ამხილე დამნაშავე<br>► რაც ნაკლებ კითხვას დასვამ — მით მეტი XP',
+    detTypeLabel:'▣ დანაშაულის ტიპი',
+    detEasyBtn:'► EASY CASE',detHardBtn:'► HARD CASE',
+    chatSys:'შენ ხარ "პარასკევა" — AI ასისტენტი. ქართულად პასუხობ, ენერგიულად, Action-ზე ორიენტირებულად. პასუხი იყოს სრული — სიგრძეზე შეზღუდვა არ გაქვს.',
+    usageLocked:'⏱ 3 საათი ამოიწურა!',
+    usageWarn:'⚠ გამოყენების ლიმიტი ახლოვდება!',
+  },
+  en:{
+    online:'ONLINE',chat:'CHAT',games:'GAMES',detective:'DETECTIVE',
+    music:'MUSIC',motivation:'MOTIVATION',learn:'LEARN',stats:'STATS',prizes:'PRIZES',
+    streakLbl:'🔥 STREAK',chatTitle:'PARASKEVA CHAT',chatBadge:'AI ACTIVE',
+    gamesTitle:'MIND GAMES',detTitle:'DETECTIVE MODE',
+    musicTitle:'FOCUS MUSIC',motivTitle:'💪 MOTIVATION ENGINE',
+    learnTitle:'LEARNING PLAN',statsTitle:'STATISTICS',prizesTitle:'🏆 PRIZE SHOP',
+    chatPlaceholder:'Type a message...',
+    langBtn:'🌐 ქარ',
+    detAgencyDesc:'► AI generates a full investigation<br>► 4 suspects — interrogate each separately<br>► Gather evidence, expose the culprit<br>► Fewer questions = more XP',
+    detTypeLabel:'▣ CRIME TYPE',
+    detEasyBtn:'► EASY CASE',detHardBtn:'► HARD CASE',
+    chatSys:'You are "Paraskeva" — an AI assistant. Respond in English, energetically, action-oriented. Give complete, detailed answers — no length limit.',
+    usageLocked:'⏱ 3 hour limit reached!',
+    usageWarn:'⚠ Usage limit approaching!',
+  }
+};
+function t(key){return (T[S.lang]||T.ka)[key]||key;}
+
+function applyLang(){
+  const lang=S.lang;
+  const langBtn=document.getElementById('lang-btn');
+  if(langBtn)langBtn.textContent=t('langBtn');
+  const hStatus=document.getElementById('h-status');
+  if(hStatus)hStatus.textContent=t('online');
+  // Nav buttons
+  const navMap={chat:'n-chat',games:'n-games',detective:'n-detective',music:'n-music',
+    motivate:'n-motivate',learn:'n-learn',stats:'n-stats',prizes:'n-prizes'};
+  const navLblMap={chat:'chat',games:'games',detective:'detective',music:'music',
+    motivate:'motivation',learn:'learn',stats:'stats',prizes:'prizes'};
+  Object.keys(navMap).forEach(k=>{
+    const el=document.getElementById(navMap[k]);
+    if(el){
+      const icon=el.querySelector('.n-icon');
+      const iconText=icon?icon.outerHTML:'';
+      el.innerHTML=iconText+t(navLblMap[k]).toUpperCase();
+      if(icon&&el.querySelector('.n-icon')){}
+    }
+  });
+  // Section titles
+  const titleMap={
+    'PARASKEVA CHAT':t('chatTitle'),'AI ACTIVE':t('chatBadge'),
+    'MIND GAMES':t('gamesTitle'),'DETECTIVE MODE':t('detTitle'),
+    'FOCUS MUSIC':t('musicTitle'),'STATISTICS':t('statsTitle'),
+  };
+  // streak
+  const strkLbl=document.querySelector('.streak-l');
+  if(strkLbl)strkLbl.textContent=t('streakLbl');
+  // chat placeholder
+  const cinp=document.getElementById('c-inp');
+  if(cinp)cinp.placeholder=t('chatPlaceholder');
+  // detective agency
+  const detDesc=document.getElementById('det-agency-desc');
+  if(detDesc)detDesc.innerHTML=t('detAgencyDesc');
+  const detTypeLbl=document.getElementById('det-type-label');
+  if(detTypeLbl)detTypeLbl.textContent=t('detTypeLabel');
+  const detEasy=document.getElementById('det-easy-btn');
+  if(detEasy)detEasy.textContent=t('detEasyBtn');
+  const detHard=document.getElementById('det-hard-btn');
+  if(detHard)detHard.textContent=t('detHardBtn');
+  // Update chat system prompt
+  SYS_CHAT_CURRENT=t('chatSys');
+  // Refresh crime type selected text
+  updateDetTypeDisplay();
+}
+
+function toggleLang(){
+  S.lang=S.lang==='ka'?'en':'ka';
+  save();
+  applyLang();
+  toast(S.lang==='ka'?'🇬🇪 ქართული':'🇬🇧 English switched');
+}
+
+// ══════════════════════════════════════════
+// DETECTIVE CRIME TYPE
+// ══════════════════════════════════════════
+const DET_TYPES={
+  murder:{ka:'🔪 მკვლელობა',en:'🔪 Murder',color:'var(--red)'},
+  theft:{ka:'💼 ქურდობა',en:'💼 Theft',color:'var(--cyan)'},
+  poison:{ka:'☠ მოწამვლა',en:'☠ Poisoning',color:'var(--yellow)'},
+  missing:{ka:'👁 გაქრობა',en:'👁 Missing Person',color:'var(--purple)'},
+};
+function setDetType(type){
+  detCrimeType=type;
+  document.querySelectorAll('.det-type-btn').forEach(b=>b.style.opacity='0.45');
+  const active=document.getElementById('dtb-'+type);
+  if(active)active.style.opacity='1';
+  updateDetTypeDisplay();
+}
+function updateDetTypeDisplay(){
+  const el=document.getElementById('det-type-selected');
+  if(!el)return;
+  const info=DET_TYPES[detCrimeType]||DET_TYPES.murder;
+  const lbl=S.lang==='en'?info.en:info.ka;
+  el.innerHTML='<span style="color:'+info.color+'">✓ '+lbl+' '+(S.lang==='en'?'selected':'არჩეულია')+'</span>';
+}
+
+// ══════════════════════════════════════════
+// 3-HOUR USAGE LIMIT
+// ══════════════════════════════════════════
+const LIMIT_MINS=180;
+let usageInterval=null;
+
+function initUsageTimer(){
+  // Reset if new day
+  const today=new Date().toDateString();
+  if(S.usageDate!==today){S.usageToday=0;S.usageDate=today;save();}
+  if(S.hasPremium){
+    const hUsage=document.getElementById('h-usage');
+    if(hUsage)hUsage.style.display='none';
+    return;
+  }
+  updateUsageDisplay();
+  usageInterval=setInterval(()=>{
+    if(S.hasPremium){clearInterval(usageInterval);
+      const hUsage=document.getElementById('h-usage');
+      if(hUsage)hUsage.style.display='none';
+      return;
+    }
+    S.usageToday++;save();
+    updateUsageDisplay();
+    if(S.usageToday>=LIMIT_MINS)showUsageLocked();
+    else if(S.usageToday===LIMIT_MINS-10)toast('⚠ '+(LIMIT_MINS-S.usageToday)+' წუთი დარჩა ლიმიტამდე!','');
+  },60000);
+  // Check immediately on load
+  if(S.usageToday>=LIMIT_MINS)showUsageLocked();
+}
+
+function updateUsageDisplay(){
+  const remaining=Math.max(0,LIMIT_MINS-S.usageToday);
+  const h=Math.floor(remaining/60);
+  const m=remaining%60;
+  const el=document.getElementById('usage-disp');
+  if(el)el.textContent=h+':'+(m<10?'0':'')+m;
+  const wrap=document.getElementById('h-usage');
+  if(wrap){
+    if(remaining<=30)wrap.style.color='var(--red)';
+    else if(remaining<=60)wrap.style.color='var(--yellow)';
+    else wrap.style.color='var(--cyan)';
+  }
+}
+
+function showUsageLocked(){
+  let overlay=document.getElementById('usage-overlay');
+  if(overlay)return;
+  overlay=document.createElement('div');
+  overlay.id='usage-overlay';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(5,9,5,.97);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+  overlay.innerHTML=`
+    <div style="font-family:VT323,monospace;font-size:5rem;color:var(--red);text-shadow:0 0 30px var(--red);line-height:1;">⏱</div>
+    <div style="font-family:Orbitron,monospace;color:var(--red);font-size:1rem;letter-spacing:4px;margin:.8rem 0 .4rem;">${S.lang==='en'?'DAILY LIMIT REACHED':'დღიური ლიმიტი ამოიწურა'}</div>
+    <div style="color:var(--text-dim);font-size:.8rem;line-height:2;text-align:center;max-width:420px;margin:0 auto 1.4rem;">
+      ${S.lang==='en'?'You have used Paraskeva for <strong style="color:var(--red)">3 hours</strong> today.<br>Purchase <strong style="color:var(--yellow)">PREMIUM PARASKEVA</strong> for unlimited access!<br><span style="color:var(--text-dim);font-size:.7rem;">Or come back tomorrow for 3 more free hours.</span>':'დღეს გამოიყენე პარასკევა <strong style="color:var(--red)">3 საათი</strong>.<br>შეიძინე <strong style="color:var(--yellow)">PREMIUM PARASKEVA</strong> ულიმიტო წვდომისთვის!<br><span style="color:var(--text-dim);font-size:.7rem;">ან დაბრუნდი ხვალ კიდევ 3 საათის გამოყენებისთვის.</span>'}
+    </div>
+    <div style="display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;">
+      <button class="btn btn-y" onclick="nav('prizes');document.getElementById('usage-overlay').remove();setTimeout(()=>{const el=document.getElementById('premium-buy-card');if(el)el.scrollIntoView({behavior:'smooth'});},200);">${S.lang==='en'?'⚡ BUY PREMIUM — 20₾':'⚡ PREMIUM ᲧᲘᲓᲕᲐ — 20₾'}</button>
+      <button class="btn" onclick="document.getElementById('usage-overlay').remove();" style="border-color:var(--text-dim);color:var(--text-dim);">${S.lang==='en'?'← CONTINUE BROWSING':'← გაგრძელება (მხოლობელი რეჟ.)'}</button>
+    </div>
+    <div style="margin-top:1rem;font-size:.68rem;color:var(--text-dim);">${S.lang==='en'?'Contact: Paraskeva.AI — 20₾':'Paraskeva.AI — 20₾'}</div>`;
+  document.body.appendChild(overlay);
+}
+
+function checkUsageLimitForChat(){
+  if(S.hasPremium)return true;
+  if(S.usageToday>=LIMIT_MINS){showUsageLocked();return false;}
+  return true;
+}
+
+function showApp(){document.getElementById('app').style.display='block';refreshUI();startClock();checkStreak();renderMusic();setTimeout(renderPrizes,100);setTimeout(renderDailyTasks,150);setTimeout(applyLang,50);setTimeout(initUsageTimer,200);}
+
+// ══════════════════════════════════════════
+// CLOCK & STREAK
+// ══════════════════════════════════════════
+function startClock(){
+  const tick=()=>{document.getElementById('h-time').textContent=new Date().toTimeString().slice(0,8);};
+  tick();setInterval(tick,1000);
+}
+function checkStreak(){
+  const today=new Date().toDateString();
+  if(S.lastDay!==today){
+    const yest=new Date(Date.now()-86400000).toDateString();
+    S.streak=(S.lastDay===yest)?S.streak+1:1;
+    S.days++;S.lastDay=today;save();addXP(5,'Day Streak!');
+    toast('🔥 Day '+S.streak+' streak!');
+  }
+}
+
+// ══════════════════════════════════════════
+// UI NAV
+// ══════════════════════════════════════════
+function nav(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('p-'+name).classList.add('active');
+  document.getElementById('n-'+name).classList.add('active');
+  if(name==='stats'||name==='prizes'||name==='motivate'){refreshUI();renderPrizes();if(name==='motivate')renderDailyTasks();}
+}
+function refreshUI(){
+  document.getElementById('h-xp').textContent=S.xp;
+  document.getElementById('sb-streak').textContent=S.streak;
+  ['xp','str','msg','gm','det','days'].forEach(k=>{
+    const el=document.getElementById('st-'+k);
+    if(el)el.textContent={xp:S.xp,str:S.streak,msg:S.msgs,gm:S.games,det:S.dets,days:S.days}[k]||0;
+  });
+  Object.keys(S.bests).forEach(g=>{const el=document.getElementById('b-'+g);if(el)el.textContent=S.bests[g];});
+  checkAchs();
+}
+function resetAll(){if(!confirm('ყველა მონაცემი წაიშლება?'))return;localStorage.clear();location.reload();}
+
+// ══════════════════════════════════════════
+// ACHIEVEMENTS
+// ══════════════════════════════════════════
+function unlock(id){
+  const el=document.getElementById(id);
+  if(el&&!el.classList.contains('unlocked')){
+    el.classList.add('unlocked');addXP(25,'Achievement!');
+    toast('🏆 UNLOCKED: '+el.querySelector('.a-name').textContent,'');
+  }
+}
+function checkAchs(){
+  if(S.msgs>=1)unlock('a-fc');
+  if(S.msgs>=10)unlock('a-10m');
+  if(S.games>=1)unlock('a-gm');
+  if(S.bests.sudoku>=1)unlock('a-su');
+  if(S.bests.chess>=1)unlock('a-ch');
+  if(S.dets>=1)unlock('a-det');
+  if(S.streak>=3)unlock('a-str');
+  if(S.xp>=200)unlock('a-xp');
+}
+
+// ══════════════════════════════════════════
+// GROQ API (Free, Works from Georgia)
+// ══════════════════════════════════════════
+const GROQ_MODELS=['llama-3.3-70b-versatile','llama-3.1-8b-instant'];
+let activeModel=GROQ_MODELS[0];
+
+async function callGroq(msgs,maxTok=1000,retries=2){
+  for(let attempt=0;attempt<=retries;attempt++){
+    for(let mi=0;mi<GROQ_MODELS.length;mi++){
+      const model=(attempt===0)?activeModel:GROQ_MODELS[mi];
+      try{
+        const controller=new AbortController();
+        const timeout=setTimeout(()=>controller.abort(),15000);
+        const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+          method:'POST',
+          headers:{'Content-Type':'application/json','Authorization':'Bearer '+S.key},
+          body:JSON.stringify({model:model,messages:msgs,max_tokens:maxTok,temperature:0.7}),
+          signal:controller.signal
+        });
+        clearTimeout(timeout);
+        if(!r.ok){
+          const errData=await r.json().catch(()=>({}));
+          const errMsg=errData.error?errData.error.message:'HTTP '+r.status;
+          if(r.status===429){await new Promise(ok=>setTimeout(ok,1500));continue;}
+          if(r.status===401)throw new Error('API Key არასწორია ან ვადაგასულია. შეამოწმე key.');
+          throw new Error(errMsg);
+        }
+        const d=await r.json();
+        if(d.error)throw new Error(d.error.message);
+        if(!d.choices||!d.choices[0])throw new Error('ცარიელი პასუხი API-დან');
+        activeModel=model;
+        return d.choices[0].message.content;
+      }catch(e){
+        if(e.name==='AbortError'){
+          if(attempt<retries)continue;
+          throw new Error('სერვერი არ პასუხობს (timeout). შეამოწმე ინტერნეტი.');
+        }
+        if(e.message.includes('Failed to fetch')||e.message.includes('NetworkError')){
+          if(attempt<retries){await new Promise(ok=>setTimeout(ok,1000));continue;}
+          throw new Error('ქსელის შეცდომა — შეამოწმე ინტერნეტ კავშირი. თუ VPN გიწერია, გამორთე და სცადე.');
+        }
+        throw e;
+      }
+    }
+  }
+  throw new Error('API მიუწვდომელია. სცადე მოგვიანებით.');
+}
+async function callGemini(prompt,sys='',maxTok=1000){
+  const msgs=[];
+  if(sys)msgs.push({role:'system',content:sys});
+  msgs.push({role:'user',content:prompt});
+  return callGroq(msgs,maxTok);
+}
+async function callGeminiChat(history,sys='',maxTok=800){
+  const msgs=[];
+  if(sys)msgs.push({role:'system',content:sys});
+  history.forEach(m=>msgs.push({role:m.role==='model'?'assistant':'user',content:m.parts?m.parts[0].text:m.content}));
+  return callGroq(msgs,maxTok);
+}
+
+// ══════════════════════════════════════════
+// CHAT
+// ══════════════════════════════════════════
+let SYS_CHAT_CURRENT=`შენ ხარ "პარასკევა" — AI ასისტენტი. ქართულად პასუხობ, ენერგიულად, Action-ზე ორიენტირებულად. პასუხი იყოს სრული — სიგრძეზე შეზღუდვა არ გაქვს.`;
+const SYS_CHAT=`შენ ხარ "პარასკევა" — AI ასისტენტი. ქართულად პასუხობ, ენერგიულად, Action-ზე ორიენტირებულად. პასუხი იყოს სრული — სიგრძეზე შეზღუდვა არ გაქვს.`;
+
+async function send(){
+  const inp=document.getElementById('c-inp');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  if(!checkUsageLimitForChat())return;
+  inp.value='';
+  addMsg('user',txt);
+  document.getElementById('sbtn').disabled=true;
+  showTyping();
+  S.history.push({role:'user',parts:[{text:txt}]});
+  S.msgs++;addXP(1);save();
+  try{
+    const resp=await callGeminiChat(S.history.slice(-10),SYS_CHAT_CURRENT||SYS_CHAT,2000);
+    S.history.push({role:'model',parts:[{text:resp}]});
+    hideTyping();addMsg('ai',resp);
+  }catch(e){
+    hideTyping();addMsg('ai','⚠ შეცდომა: '+e.message);
+  }
+  document.getElementById('sbtn').disabled=false;
+}
+function addMsg(role,text){
+  const msgs=document.getElementById('chat-msgs');
+  const d=document.createElement('div');
+  d.className='msg '+role;
+  d.innerHTML=`<div class="m-av">${role==='user'?'▶':'◈'}</div><div>
+  <div class="m-name">${role==='user'?'YOU':'PARASKEVA.AI'}</div>
+  <div class="m-text">${esc(text)}</div></div>`;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+}
+let typEl=null;
+function showTyping(){
+  const msgs=document.getElementById('chat-msgs');
+  typEl=document.createElement('div');typEl.className='msg ai';typEl.id='typ-el';
+  typEl.innerHTML=`<div class="m-av">◈</div><div><div class="m-name">PARASKEVA.AI</div>
+  <div class="typing-dots"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  msgs.appendChild(typEl);msgs.scrollTop=msgs.scrollHeight;
+}
+function hideTyping(){const t=document.getElementById('typ-el');if(t)t.remove();}
+function ckdown(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function qmsg(m){document.getElementById('c-inp').value=m;send();}
+
+// ══════════════════════════════════════════
+// GAMES ENGINE
+// ══════════════════════════════════════════
+let CG=null,gscore=0,gtimer=null;
+function startGame(type){
+  CG=type;gscore=0;
+  document.getElementById('ga-score').textContent='0';
+  document.getElementById('game-area').style.display='block';
+  document.getElementById('game-area').scrollIntoView({behavior:'smooth',block:'start'});
+  S.games++;save();refreshUI();
+  if(type==='memory')initMemory();
+  else if(type==='sudoku')initSudoku();
+  else if(type==='chess')initChess();
+}
+function exitGame(){
+  if(gtimer){clearInterval(gtimer);gtimer=null;}
+  document.getElementById('game-area').style.display='none';
+  CG=null;
+}
+function setScore(n){gscore=n;document.getElementById('ga-score').textContent=n;}
+
+// ─── MEMORY ───
+let mPat=[],mIn=[],mLvl=1;
+function initMemory(){
+  document.getElementById('ga-title').textContent='MATRIX MEMORY';
+  mLvl=1;gscore=0;mPat=[];memRound();
+}
+function memRound(){
+  const gc=document.getElementById('game-cnt');
+  gc.innerHTML=`<div style="color:var(--text-dim);font-size:.7rem;margin-bottom:.6rem">LEVEL ${mLvl} — ${mLvl+2} უჯრა</div>
+  <div id="mem-grid"></div><div id="mem-msg" style="color:var(--cyan);font-size:.73rem;margin-top:.6rem">◈ WATCH...</div>`;
+  const grid=document.getElementById('mem-grid');
+  const cells=[];
+  for(let i=0;i<25;i++){const c=document.createElement('div');c.className='mc-cell';c.dataset.i=i;grid.appendChild(c);cells.push(c);}
+  const cnt=mLvl+2;mPat=[];
+  while(mPat.length<cnt){const n=Math.floor(Math.random()*25);if(!mPat.includes(n))mPat.push(n);}
+  let shown=0;
+  const nxt=()=>{
+    if(shown>0)cells[mPat[shown-1]].classList.remove('lit');
+    if(shown<mPat.length){cells[mPat[shown]].classList.add('lit');shown++;setTimeout(nxt,560);}
+    else{setTimeout(()=>{cells[mPat[shown-1]].classList.remove('lit');mIn=[];document.getElementById('mem-msg').textContent='► CLICK!';cells.forEach(c=>c.onclick=()=>memClick(c,cells));},420);}
+  };
+  setTimeout(nxt,350);
+}
+function memClick(cell,cells){
+  const i=parseInt(cell.dataset.i);
+  if(mPat.includes(i)){
+    cell.classList.add('correct');mIn.push(i);
+    if(mIn.length===mPat.length){gscore+=mLvl*10;setScore(gscore);if(gscore>S.bests.memory){S.bests.memory=gscore;save();}mLvl++;setTimeout(memRound,600);addXP(2);}
+  }else{
+    cell.classList.add('wrong');cells.forEach(c=>c.onclick=null);
+    if(gscore>S.bests.memory){S.bests.memory=gscore;save();}
+    document.getElementById('mem-msg').textContent='✕ GAME OVER! Score: '+gscore;
+    setTimeout(exitGame,2000);
+  }
+}
+
+// ─── SUDOKU ───
+let sudGrid=[],sudSolution=[],sudSelected=null;
+function initSudoku(){
+  document.getElementById('ga-title').textContent='SUDOKU';
+  document.getElementById('ga-score-wrap').style.display='none';
+  genSudoku();
+}
+function genSudoku(){
+  // Generate solved board
+  sudSolution=Array.from({length:9},()=>Array(9).fill(0));
+  fillBoard(sudSolution);
+  // Remove cells for puzzle
+  sudGrid=sudSolution.map(r=>r.slice());
+  const removals=40;
+  let removed=0;
+  while(removed<removals){
+    const r=Math.floor(Math.random()*9),c=Math.floor(Math.random()*9);
+    if(sudGrid[r][c]!==0){sudGrid[r][c]=0;removed++;}
+  }
+  renderSudoku();
+}
+function fillBoard(b){
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++){
+    if(b[r][c]===0){
+      const nums=shuffle([1,2,3,4,5,6,7,8,9]);
+      for(const n of nums){if(validSu(b,r,c,n)){b[r][c]=n;if(fillBoard(b))return true;b[r][c]=0;}}
+      return false;
+    }
+  }
+  return true;
+}
+function validSu(b,r,c,n){
+  for(let i=0;i<9;i++){if(b[r][i]===n||b[i][c]===n)return false;}
+  const br=Math.floor(r/3)*3,bc=Math.floor(c/3)*3;
+  for(let i=0;i<3;i++)for(let j=0;j<3;j++){if(b[br+i][bc+j]===n)return false;}
+  return true;
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function renderSudoku(){
+  const gc=document.getElementById('game-cnt');
+  const isGiven=Array.from({length:9},(_,r)=>Array.from({length:9},(_,c)=>sudGrid[r][c]!==0));
+  gc.innerHTML=`<div style="color:var(--text-dim);font-size:.7rem;margin-bottom:.6rem">შეავსე ბადე — გამეორება არ შეიძლება სტრიქონში, სვეტში ან 3×3 კვადრატში</div>
+  <div id="sudoku-board"></div>
+  <div class="su-btns" style="margin-top:.7rem;">
+    <button class="btn btn-sm" onclick="checkSudoku()">✓ CHECK</button>
+    <button class="btn btn-sm btn-c" onclick="solveSudokuHelp()">? HINT</button>
+    <button class="btn btn-sm btn-r" onclick="genSudoku()">↺ NEW</button>
+  </div>`;
+  const board=document.getElementById('sudoku-board');
+  for(let r=0;r<9;r++)for(let c=0;c<9;c++){
+    const cell=document.createElement('input');
+    cell.type='text';cell.maxLength=1;cell.className='sc';
+    if(sudGrid[r][c]!==0){cell.value=sudGrid[r][c];cell.classList.add('given');cell.readOnly=true;}
+    if((c+1)%3===0&&c<8)cell.classList.add('box-right');
+    if((r+1)%3===0&&r<8)cell.classList.add('box-bottom');
+    cell.dataset.r=r;cell.dataset.c=c;
+    cell.addEventListener('input',function(){
+      const v=parseInt(this.value);
+      if(isNaN(v)||v<1||v>9)this.value='';
+      else{sudGrid[r][c]=v;this.classList.remove('err','correct');}
+    });
+    board.appendChild(cell);
+  }
+}
+function checkSudoku(){
+  let errors=0,filled=0;
+  const cells=document.querySelectorAll('.sc');
+  cells.forEach(cell=>{
+    const r=parseInt(cell.dataset.r),c=parseInt(cell.dataset.c);
+    if(!cell.classList.contains('given')&&cell.value){
+      filled++;
+      if(parseInt(cell.value)===sudSolution[r][c])cell.classList.add('correct');
+      else{cell.classList.add('err');errors++;}
+    }
+  });
+  if(errors===0&&filled===81-document.querySelectorAll('.sc.given').length){
+    toast('🎉 SUDOKU SOLVED! +50 XP','');
+    addXP(10,'Sudoku!');
+    S.bests.sudoku++;save();refreshUI();
+    document.getElementById('game-cnt').innerHTML+=`<div style="color:var(--green);font-family:VT323;font-size:2.5rem;text-align:center;margin-top:1rem;text-shadow:0 0 20px var(--green)">✓ SOLVED!</div>`;
+  }else if(errors>0)toast('⚠ '+errors+' შეცდომა ნაპოვნია','');
+}
+function solveSudokuHelp(){
+  const cells=document.querySelectorAll('.sc');
+  const empty=[];
+  cells.forEach(cell=>{if(!cell.classList.contains('given')&&!cell.value)empty.push(cell);});
+  if(!empty.length)return;
+  const cell=empty[Math.floor(Math.random()*Math.min(3,empty.length))];
+  const r=parseInt(cell.dataset.r),c=parseInt(cell.dataset.c);
+  cell.value=sudSolution[r][c];cell.classList.add('correct');
+  sudGrid[r][c]=sudSolution[r][c];
+  toast('💡 Hint: ['+r+','+c+'] = '+sudSolution[r][c]);
+}
+
+// ─── CHESS — FULL ENGINE ───
+// White = UPPERCASE, Black = lowercase
+// White pieces shown with bright style, Black with dark style
+
+let chBoard,chTurn,chSel,chLegal,chStatus,chWCapt,chBCapt,chGameOver,chEnPassant,chCastle;
+
+function initChess(){
+  document.getElementById('ga-title').textContent='CHESS vs AI';
+  document.getElementById('ga-score-wrap').style.display='none';
+  chBoard=[
+    ['r','n','b','q','k','b','n','r'],
+    ['p','p','p','p','p','p','p','p'],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    [null,null,null,null,null,null,null,null],
+    ['P','P','P','P','P','P','P','P'],
+    ['R','N','B','Q','K','B','N','R']
+  ];
+  chTurn='w';chSel=null;chLegal=[];chStatus='შენი სვლა ⬜ თეთრი';
+  chWCapt=[];chBCapt=[];chGameOver=false;
+  chEnPassant=null; // [r,c] target square
+  chCastle={wK:true,wQR:true,wKR:true,bK:true,bQR:true,bKR:true};
+  renderChess();
+}
+
+// ── helpers ──
+const isW=p=>p&&p===p.toUpperCase()&&p!==p.toLowerCase();
+const isB=p=>p&&p===p.toLowerCase()&&p!==p.toUpperCase();
+const isEnemy=(p,col)=>col==='w'?isB(p):isW(p);
+const isFriend=(p,col)=>col==='w'?isW(p):isB(p);
+const inBoard=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
+const copyBoard=b=>b.map(r=>r.slice());
+
+// ── raw pseudo-legal moves (ignores check) ──
+function rawMoves(b,r,c,col,ep){
+  const p=b[r][c]; if(!p) return [];
+  const mv=[];
+  const pt=p.toLowerCase();
+  const add=(nr,nc)=>{if(inBoard(nr,nc)&&!isFriend(b[nr][nc],col))mv.push([nr,nc]);};
+  const slide=(dr,dc)=>{
+    let nr=r+dr,nc=c+dc;
+    while(inBoard(nr,nc)){
+      if(isFriend(b[nr][nc],col))break;
+      mv.push([nr,nc]);
+      if(b[nr][nc])break;
+      nr+=dr;nc+=dc;
+    }
+  };
+  if(pt==='p'){
+    const dir=col==='w'?-1:1;
+    const start=col==='w'?6:1;
+    if(inBoard(r+dir,c)&&!b[r+dir][c]){
+      mv.push([r+dir,c]);
+      if(r===start&&!b[r+2*dir][c])mv.push([r+2*dir,c]);
+    }
+    [-1,1].forEach(dc=>{
+      if(inBoard(r+dir,c+dc)){
+        if(isEnemy(b[r+dir][c+dc],col))mv.push([r+dir,c+dc]);
+        if(ep&&ep[0]===r+dir&&ep[1]===c+dc)mv.push([r+dir,c+dc]);
+      }
+    });
+  }
+  else if(pt==='n'){[[-2,-1],[-2,1],[-1,-2],[-1,2],[1,-2],[1,2],[2,-1],[2,1]].forEach(([dr,dc])=>add(r+dr,c+dc));}
+  else if(pt==='b'){slide(1,1);slide(1,-1);slide(-1,1);slide(-1,-1);}
+  else if(pt==='r'){slide(1,0);slide(-1,0);slide(0,1);slide(0,-1);}
+  else if(pt==='q'){slide(1,0);slide(-1,0);slide(0,1);slide(0,-1);slide(1,1);slide(1,-1);slide(-1,1);slide(-1,-1);}
+  else if(pt==='k'){
+    for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(dr===0&&dc===0)continue;add(r+dr,c+dc);}
+  }
+  return mv;
+}
+
+// ── is square attacked by col? ──
+function isAttacked(b,r,c,byCol){
+  for(let pr=0;pr<8;pr++)for(let pc=0;pc<8;pc++){
+    const p=b[pr][pc];
+    if(!p)continue;
+    if(byCol==='w'&&!isW(p))continue;
+    if(byCol==='b'&&!isB(p))continue;
+    const ms=rawMoves(b,pr,pc,byCol,null);
+    if(ms.some(([mr,mc])=>mr===r&&mc===c))return true;
+  }
+  return false;
+}
+
+// ── find king ──
+function findKing(b,col){
+  const k=col==='w'?'K':'k';
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(b[r][c]===k)return[r,c];
+  return null;
+}
+
+// ── is col in check? ──
+function inCheck(b,col){
+  const k=findKing(b,col);
+  if(!k)return false;
+  return isAttacked(b,k[0],k[1],col==='w'?'b':'w');
+}
+
+// ── legal moves (filters those leaving king in check) ──
+function legalMoves(b,r,c,col,ep,castle){
+  const pseudo=rawMoves(b,r,c,col,ep);
+  const p=b[r][c];
+  const result=[];
+  for(const [tr,tc] of pseudo){
+    const nb=copyBoard(b);
+    // en passant capture
+    if(p.toLowerCase()==='p'&&tc!==c&&!nb[tr][tc]){
+      nb[r][tc]=null; // remove captured pawn
+    }
+    nb[tr][tc]=nb[r][c];
+    nb[r][c]=null;
+    // promotion auto-queen for check detection
+    if(nb[tr][tc]==='P'&&tr===0)nb[tr][tc]='Q';
+    if(nb[tr][tc]==='p'&&tr===7)nb[tr][tc]='q';
+    if(!inCheck(nb,col))result.push([tr,tc]);
+  }
+  // Castling
+  if(p.toLowerCase()==='k'&&castle){
+    const row=col==='w'?7:0;
+    if(r===row&&c===4&&!inCheck(b,col)){
+      // Kingside
+      const kKey=col==='w'?'wK':'bK', krKey=col==='w'?'wKR':'bKR';
+      if(castle[kKey]&&castle[krKey]&&!b[row][5]&&!b[row][6]&&
+         b[row][7]===(col==='w'?'R':'r')&&
+         !isAttacked(b,row,5,col==='w'?'b':'w')&&!isAttacked(b,row,6,col==='w'?'b':'w')){
+        result.push([row,6,'castle-k']);
+      }
+      // Queenside
+      const qrKey=col==='w'?'wQR':'bQR';
+      if(castle[kKey]&&castle[qrKey]&&!b[row][3]&&!b[row][2]&&!b[row][1]&&
+         b[row][0]===(col==='w'?'R':'r')&&
+         !isAttacked(b,row,3,col==='w'?'b':'w')&&!isAttacked(b,row,2,col==='w'?'b':'w')){
+        result.push([row,2,'castle-q']);
+      }
+    }
+  }
+  return result;
+}
+
+// ── all legal moves for col ──
+function allLegal(b,col,ep,castle){
+  const all=[];
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const p=b[r][c];if(!p)continue;
+    if(col==='w'&&!isW(p))continue;
+    if(col==='b'&&!isB(p))continue;
+    legalMoves(b,r,c,col,ep,castle).forEach(m=>all.push({fr:r,fc:c,tr:m[0],tc:m[1],flag:m[2]||null}));
+  }
+  return all;
+}
+
+// ── apply move to board ──
+function applyMove(b,fr,fc,tr,tc,flag,ep,castle,wCapt,bCapt,col){
+  const nb=copyBoard(b);
+  const nc2={...castle};
+  const p=nb[fr][fc];
+  const captured=nb[tr][tc];
+  // En passant
+  let newEp=null;
+  if(p.toLowerCase()==='p'&&tc!==fc&&!nb[tr][tc]){
+    // en passant capture
+    nb[fr][tc]=null;
+  }
+  // Double pawn push → set en passant
+  if(p.toLowerCase()==='p'&&Math.abs(tr-fr)===2){
+    newEp=[(fr+tr)>>1,tc];
+  }
+  // Move piece
+  nb[tr][tc]=nb[fr][fc];
+  nb[fr][fc]=null;
+  // Castling rook
+  if(flag==='castle-k'){nb[tr][tc-1]=nb[tr][7];nb[tr][7]=null;}
+  if(flag==='castle-q'){nb[tr][tc+1]=nb[tr][0];nb[tr][0]=null;}
+  // Promotion
+  if(nb[tr][tc]==='P'&&tr===0)nb[tr][tc]='Q';
+  if(nb[tr][tc]==='p'&&tr===7)nb[tr][tc]='q';
+  // Update castling rights
+  if(p==='K')nc2.wK=nc2.wKR=nc2.wQR=false;
+  if(p==='k')nc2.bK=nc2.bKR=nc2.bQR=false;
+  if(fr===7&&fc===7)nc2.wKR=false;
+  if(fr===7&&fc===0)nc2.wQR=false;
+  if(fr===0&&fc===7)nc2.bKR=false;
+  if(fr===0&&fc===0)nc2.bQR=false;
+  // Captured pieces
+  const nwc=[...wCapt],nbc=[...bCapt];
+  if(captured){col==='w'?nwc.push(captured):nbc.push(captured);}
+  return{board:nb,ep:newEp,castle:nc2,wCapt:nwc,bCapt:nbc};
+}
+
+// ── render ──
+const CH_SYMS={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
+
+function renderChess(){
+  const gc=document.getElementById('game-cnt');
+  const chk=!chGameOver&&inCheck(chBoard,chTurn);
+  const dispStatus=chk?'⚠ შახი! '+chStatus:chStatus;
+  gc.innerHTML=`
+  <div id="ch-status" style="font-size:.78rem;margin-bottom:.4rem;color:${chGameOver?'var(--green)':chk?'var(--red)':'var(--cyan)'}">${esc(dispStatus)}</div>
+  <div style="font-size:.88rem;letter-spacing:2px;margin-bottom:.3rem;color:var(--text-dim)">⬛ ${chBCapt.map(p=>CH_SYMS[p]||'').join('')}</div>
+  <div id="chess-board" style="display:grid;grid-template-columns:repeat(8,50px);border:2px solid var(--green-dim);width:fit-content;margin:.3rem 0;"></div>
+  <div style="font-size:.88rem;letter-spacing:2px;margin-top:.3rem;color:var(--text-dim)">⬜ ${chWCapt.map(p=>CH_SYMS[p]||'').join('')}</div>
+  <div style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+    <button class="btn btn-sm" onclick="initChess()">↺ RESTART</button>
+    ${chGameOver?'':'<span style="font-size:.68rem;color:var(--text-dim);align-self:center">⬜=შენი &nbsp;⬛=AI</span>'}
+  </div>`;
+  const board=document.getElementById('chess-board');
+  const kPos=inCheck(chBoard,chTurn)?findKing(chBoard,chTurn):null;
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const sq=document.createElement('div');
+    const light=(r+c)%2===0;
+    sq.style.cssText=`width:50px;height:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:1.6rem;transition:all .12s;user-select:none;background:${light?'#1e3020':'#0d1a0d'};`;
+    const p=chBoard[r][c];
+    const isSel=chSel&&chSel[0]===r&&chSel[1]===c;
+    const isLeg=chLegal.some(m=>m[0]===r&&m[1]===c);
+    const isKingCheck=kPos&&kPos[0]===r&&kPos[1]===c;
+    if(isSel)sq.style.background='rgba(0,255,65,0.35)';
+    else if(isKingCheck)sq.style.background='rgba(255,0,60,0.45)';
+    else if(light)sq.style.background='#1e3020';
+    // move dot or capture ring
+    if(isLeg){
+      if(p){sq.style.boxShadow='inset 0 0 0 3px var(--cyan)';}
+      else{
+        const dot=document.createElement('div');
+        dot.style.cssText='position:absolute;width:14px;height:14px;border-radius:50%;background:rgba(0,229,255,0.5);pointer-events:none;';
+        sq.appendChild(dot);
+      }
+    }
+    if(p){
+      const span=document.createElement('span');
+      span.textContent=CH_SYMS[p]||p;
+      // WHITE pieces: bright green glow; BLACK pieces: dark/red tint
+      if(isW(p)){
+        span.style.cssText='color:#e8ffe8;text-shadow:0 0 8px rgba(200,255,200,0.8),0 0 2px #fff;filter:drop-shadow(0 1px 0px #000);';
+      }else{
+        span.style.cssText='color:#1a0a0a;text-shadow:0 0 6px rgba(255,60,60,0.4);filter:drop-shadow(0 0 3px rgba(255,80,80,0.6)) drop-shadow(0 1px 1px #000);';
+      }
+      sq.appendChild(span);
+    }
+    sq.onclick=()=>chClick(r,c);
+    board.appendChild(sq);
+  }
+}
+
+function chClick(r,c){
+  if(chGameOver||chTurn!=='w')return;
+  const p=chBoard[r][c];
+  if(chSel){
+    const mv=chLegal.find(m=>m[0]===r&&m[1]===c);
+    if(mv){
+      const res=applyMove(chBoard,chSel[0],chSel[1],r,c,mv[2]||null,chEnPassant,chCastle,chWCapt,chBCapt,'w');
+      chBoard=res.board;chEnPassant=res.ep;chCastle=res.castle;chWCapt=res.wCapt;chBCapt=res.bCapt;
+      chSel=null;chLegal=[];
+      // Check game state
+      const bMoves=allLegal(chBoard,'b',chEnPassant,chCastle);
+      if(!bMoves.length){
+        if(inCheck(chBoard,'b')){chStatus='♟ CHECKMATE! შენ გაიმარჩლე! 🏆';S.bests.chess++;save();addXP(20,'Chess Win!');refreshUI();}
+        else chStatus='STALEMATE — ფრე!';
+        chGameOver=true;renderChess();return;
+      }
+      chTurn='b';chStatus='AI ფიქრობს... ⬛';renderChess();
+      setTimeout(aiMove,300);
+    }else{
+      // Click same piece = deselect, click own piece = reselect
+      if(p&&isW(p)){chSel=[r,c];chLegal=legalMoves(chBoard,r,c,'w',chEnPassant,chCastle);}
+      else{chSel=null;chLegal=[];}
+      renderChess();
+    }
+  }else{
+    if(p&&isW(p)){chSel=[r,c];chLegal=legalMoves(chBoard,r,c,'w',chEnPassant,chCastle);renderChess();}
+  }
+}
+
+// ── evaluation ──
+const PIECE_VAL={p:100,n:320,b:330,r:500,q:900,k:20000};
+const PST={
+  p:[[0,0,0,0,0,0,0,0],[50,50,50,50,50,50,50,50],[10,10,20,30,30,20,10,10],[5,5,10,25,25,10,5,5],[0,0,0,20,20,0,0,0],[5,-5,-10,0,0,-10,-5,5],[5,10,10,-20,-20,10,10,5],[0,0,0,0,0,0,0,0]],
+  n:[[-50,-40,-30,-30,-30,-30,-40,-50],[-40,-20,0,0,0,0,-20,-40],[-30,0,10,15,15,10,0,-30],[-30,5,15,20,20,15,5,-30],[-30,0,15,20,20,15,0,-30],[-30,5,10,15,15,10,5,-30],[-40,-20,0,5,5,0,-20,-40],[-50,-40,-30,-30,-30,-30,-40,-50]],
+  b:[[-20,-10,-10,-10,-10,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,10,10,5,0,-10],[-10,5,5,10,10,5,5,-10],[-10,0,10,10,10,10,0,-10],[-10,10,10,10,10,10,10,-10],[-10,5,0,0,0,0,5,-10],[-20,-10,-10,-10,-10,-10,-10,-20]],
+  r:[[0,0,0,0,0,0,0,0],[5,10,10,10,10,10,10,5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[-5,0,0,0,0,0,0,-5],[0,0,0,5,5,0,0,0]],
+  q:[[-20,-10,-10,-5,-5,-10,-10,-20],[-10,0,0,0,0,0,0,-10],[-10,0,5,5,5,5,0,-10],[-5,0,5,5,5,5,0,-5],[0,0,5,5,5,5,0,-5],[-10,5,5,5,5,5,0,-10],[-10,0,5,0,0,0,0,-10],[-20,-10,-10,-5,-5,-10,-10,-20]],
+  k:[[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-20,-30,-30,-40,-40,-30,-30,-20],[-10,-20,-20,-20,-20,-20,-20,-10],[20,20,0,0,0,0,20,20],[20,30,10,0,0,10,30,20]]
+};
+function evalFull(b){
+  let score=0;
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const p=b[r][c];if(!p)continue;
+    const pt=p.toLowerCase();
+    const v=(PIECE_VAL[pt]||0);
+    const pstRow=isW(p)?r:7-r;
+    const pstVal=(PST[pt]?PST[pt][pstRow][c]:0);
+    score+=(isB(p)?1:-1)*(v+pstVal);
+  }
+  return score;
+}
+
+// ── minimax depth 3 ──
+function minimax(b,depth,alpha,beta,maxing,ep,castle){
+  const col=maxing?'b':'w';
+  const moves=allLegal(b,col,ep,castle);
+  if(!moves.length){
+    if(inCheck(b,col))return maxing?-50000:50000;
+    return 0;
+  }
+  if(depth===0)return evalFull(b);
+  if(maxing){
+    let best=-Infinity;
+    for(const mv of moves){
+      const res=applyMove(b,mv.fr,mv.fc,mv.tr,mv.tc,mv.flag,ep,castle,[],[],'b');
+      const sc=minimax(res.board,depth-1,alpha,beta,false,res.ep,res.castle);
+      best=Math.max(best,sc);alpha=Math.max(alpha,sc);
+      if(beta<=alpha)break;
+    }
+    return best;
+  }else{
+    let best=Infinity;
+    for(const mv of moves){
+      const res=applyMove(b,mv.fr,mv.fc,mv.tr,mv.tc,mv.flag,ep,castle,[],[],'w');
+      const sc=minimax(res.board,depth-1,alpha,beta,true,res.ep,res.castle);
+      best=Math.min(best,sc);beta=Math.min(beta,sc);
+      if(beta<=alpha)break;
+    }
+    return best;
+  }
+}
+
+function aiMove(){
+  const moves=allLegal(chBoard,'b',chEnPassant,chCastle);
+  if(!moves.length){
+    if(inCheck(chBoard,'b'))chStatus='♟ CHECKMATE! შენ გაიმარჩლე! 🏆';
+    else chStatus='STALEMATE — ფრე!';
+    chGameOver=true;renderChess();return;
+  }
+  let best=null,bestSc=-Infinity;
+  for(const mv of moves){
+    const res=applyMove(chBoard,mv.fr,mv.fc,mv.tr,mv.tc,mv.flag,chEnPassant,chCastle,chWCapt,chBCapt,'b');
+    const sc=minimax(res.board,2,-Infinity,Infinity,false,res.ep,res.castle);
+    if(sc>bestSc){bestSc=sc;best={mv,res};}
+  }
+  chBoard=best.res.board;chEnPassant=best.res.ep;chCastle=best.res.castle;
+  chWCapt=best.res.wCapt;chBCapt=best.res.bCapt;
+  // Check game state for white
+  const wMoves=allLegal(chBoard,'w',chEnPassant,chCastle);
+  if(!wMoves.length){
+    if(inCheck(chBoard,'w')){chStatus='CHECKMATE — AI WON! 💪 სცადე ხელახლა!';addXP(3,'Good game!');}
+    else chStatus='STALEMATE — ფრე!';
+    chGameOver=true;renderChess();return;
+  }
+  chTurn='w';
+  chStatus=inCheck(chBoard,'w')?'⚠ შახი! შენი სვლა ⬜':'შენი სვლა ⬜';
+  renderChess();
+}
+
+// ══════════════════════════════════════════
+// DETECTIVE — FULL SYSTEM v4
+// ══════════════════════════════════════════
+let detCase=null, detActiveWitness=null, detWitnessChats={}, detQCount=0, detSolved=false;
+
+function repairJSON(raw){
+  let si=-1;
+  for(let i=0;i<raw.length;i++){if(raw[i]==='{'){si=i;break;}}
+  if(si===-1)return raw;
+  let s=raw.slice(si);
+  const stack=[];let inStr=false,esc2=false;
+  for(let i=0;i<s.length;i++){
+    const ch=s[i];
+    if(esc2){esc2=false;continue;}
+    if(ch==='\\'&&inStr){esc2=true;continue;}
+    if(ch==='"'){inStr=!inStr;continue;}
+    if(inStr)continue;
+    if(ch==='{')stack.push('}');
+    else if(ch==='[')stack.push(']');
+    else if((ch==='}'||ch===']')&&stack.length&&stack[stack.length-1]===ch)stack.pop();
+  }
+  if(inStr)s+='"';
+  s=s.replace(/,\s*$/,'');
+  s+=stack.reverse().join('');
+  return s;
+}
+function parseJSON(raw){
+  if(!raw)throw new Error('Empty');
+  try{return JSON.parse(raw);}catch(e){}
+  const m=raw.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if(m){try{return JSON.parse(m[1].trim());}catch(e){}}
+  const si=raw.indexOf('{'),ei=raw.lastIndexOf('}');
+  if(si!==-1&&ei>si){try{return JSON.parse(raw.slice(si,ei+1));}catch(e){}}
+  try{return JSON.parse(repairJSON(raw));}catch(e){}
+  throw new Error('JSON parse failed');
+}
+
+async function newMystery(diff='easy'){
+  detCase=null;detActiveWitness=null;detWitnessChats={};detQCount=0;detSolved=false;
+  document.getElementById('det-q-count').textContent='0';
+  document.getElementById('det-xp-earn').textContent='+0';
+  document.getElementById('det-main').style.display='none';
+  document.getElementById('det-game').style.display='block';
+  document.getElementById('det-interrogation').style.display='none';
+  document.getElementById('det-chat-log').innerHTML='';
+  document.getElementById('det-intr-log').innerHTML='';
+  document.getElementById('det-evidence-list').innerHTML='';
+  document.getElementById('det-suspect-cards').innerHTML='';
+  document.getElementById('det-scene-text').innerHTML='<div style="color:var(--text-dim);animation:blink 1s infinite">&#9672; AI ქმნის საქმეს... (~10 წამი)</div>';
+  const isDiff=diff==='hard';
+  const crimeTypeMap={
+    murder:{ka:['მკვლელობა სასტუმროში','მკვლელობა ოფისში','მკვლელობა ივენთზე','მკვლელობა ვილაში'],en:['Hotel murder','Office murder','Event murder','Villa murder']},
+    theft:{ka:['ქურდობა ბანკიდან','ქურდობა მუზეუმიდან','ქურდობა სასახლიდან','ქურდობა ყუბელიდან'],en:['Bank heist','Museum theft','Palace theft','Jewel robbery']},
+    poison:{ka:['მოწამვლა სახლში','მოწამვლა რესტორანში','მოწამვლა ლაბორატორიაში'],en:['Poisoning at home','Restaurant poisoning','Lab poisoning']},
+    missing:{ka:['გაქრობა ქუჩიდან','გაქრობა კომპანიის მოვლენიდან','გაქრობა ტყეში'],en:['Street disappearance','Corporate event disappearance','Forest disappearance']},
+  };
+  const ct=crimeTypeMap[detCrimeType]||crimeTypeMap.murder;
+  const ctArr=S.lang==='en'?ct.en:ct.ka;
+  const caseType=ctArr[Math.floor(Math.random()*ctArr.length)];
+  const sysMsg='You are a detective story writer. You MUST return ONLY a valid JSON object. No markdown, no code blocks, no explanation text. Just the raw JSON. Write ALL story text in '+(S.lang==='en'?'English':'Georgian')+' language.';
+  const userMsg='Create a murder mystery case in Georgian language.\nType: "'+caseType+'". Difficulty: '+(isDiff?'HARD':'EASY')+'.\n\nReturn ONLY this JSON (fill all fields in Georgian):\n{"title":"case name","victim":"victim name and job","time_of_crime":"time range","location":"place name","location_detail":"2 sentences about the room","scene":"3 sentences what police found","timeline":[{"time":"21:00","event":"what happened"},{"time":"23:00","event":"event 2"},{"time":"01:00","event":"body found"}],"evidence":[{"item":"evidence 1","location":"where found","detail":"significance"},{"item":"evidence 2","location":"where","detail":"meaning"},{"item":"evidence 3","location":"where","detail":"meaning"},{"item":"evidence 4","location":"where","detail":"meaning"}],"suspects":[{"id":"s1","name":"Full Name","age":35,"role":"job","alibi":"claimed location","secret":"hidden secret","motive":"why they might do it","personality":"1 sentence","is_culprit":false},{"id":"s2","name":"Name 2","age":28,"role":"job2","alibi":"alibi2","secret":"secret2","motive":"motive2","personality":"personality2","is_culprit":false},{"id":"s3","name":"Name 3","age":45,"role":"job3","alibi":"fake alibi","secret":"the real secret","motive":"strong motive","personality":"personality3","is_culprit":true},{"id":"s4","name":"Name 4","age":31,"role":"job4","alibi":"alibi4","secret":"secret4","motive":"motive4","personality":"personality4","is_culprit":false}],"solution":"Full explanation in Georgian: who did it, how, why, which evidence proves it"}';
+  let tries=0;
+  while(tries<3){
+    tries++;
+    try{
+      const raw=await callGroq([{role:'system',content:sysMsg},{role:'user',content:userMsg}],2500);
+      const j=parseJSON(raw);
+      if(!j||!Array.isArray(j.suspects)||j.suspects.length<3)throw new Error('სტრუქტურა არასწორია');
+      const culprits=j.suspects.filter(s=>s.is_culprit);
+      if(!culprits.length)j.suspects[2].is_culprit=true;
+      if(culprits.length>1){j.suspects.forEach((s,i)=>{s.is_culprit=(i===2);});}
+      detCase=j;
+      renderDetCase();
+      S.dets++;addXP(2,'New Mystery!');save();refreshUI();
+      addDetNote('&#9672; საქმე გაიხსნა: '+esc(j.title||''),'case');
+      return;
+    }catch(e){
+      console.warn('Detective attempt '+tries+' failed:',e.message);
+      if(tries>=3){
+        document.getElementById('det-scene-text').innerHTML='<span style="color:var(--red)">&#9888; '+esc(e.message)+'</span><br><small style="color:var(--text-dim)">სცადე ხელახლა.</small><br><button class="btn btn-sm btn-p" onclick="newMystery(\''+diff+'\')" style="margin-top:.5rem">&#8634; Try Again</button>';
+        document.getElementById('det-game').style.display='none';
+        document.getElementById('det-main').style.display='block';
+      }else{
+        await new Promise(ok=>setTimeout(ok,1500));
+      }
+    }
+  }
+}
+
+function renderDetCase(){
+  const j=detCase;
+  document.getElementById('det-case-title').textContent='◈ '+esc(j.title||'UNKNOWN CASE');
+  // Scene
+  let scHTML='<strong style="color:var(--purple);font-size:.85rem">'+esc(j.title||'')+'</strong><br><br>';
+  scHTML+='<span style="color:var(--yellow)">🕐 '+esc(j.time_of_crime||'?')+'</span>　';
+  scHTML+='<span style="color:var(--cyan)">📍 '+esc(j.location||'?')+'</span>　';
+  scHTML+='<span style="color:var(--red)">💀 '+esc(j.victim||'?')+'</span><br><br>';
+  if(j.location_detail)scHTML+='<span style="color:var(--text-dim);font-size:.76rem">'+esc(j.location_detail)+'</span><br><br>';
+  scHTML+=esc(j.scene||'');
+  // Timeline
+  if(j.timeline&&j.timeline.length){
+    scHTML+='<div style="margin-top:.8rem;font-size:.62rem;color:var(--text-dim);letter-spacing:2px;">▣ TIMELINE</div>';
+    j.timeline.forEach(t=>{
+      scHTML+='<div style="font-size:.73rem;margin-top:.3rem;"><span style="color:var(--cyan);margin-right:.4rem">'+esc(t.time||'')+'</span>'+esc(t.event||'')+'</div>';
+    });
+  }
+  document.getElementById('det-scene-text').innerHTML=scHTML;
+
+  // Evidence
+  const evEl=document.getElementById('det-evidence-list');
+  evEl.innerHTML='';
+  (j.evidence||[]).forEach(ev=>{
+    const d=document.createElement('div');
+    d.className='clue-item';
+    d.innerHTML='<strong style="font-size:.75rem">🔎 '+esc(ev.item||'')+'</strong>'
+      +'<div style="font-size:.66rem;color:var(--text-dim);margin-top:.1rem">📍 '+esc(ev.location||'')+'</div>'
+      +'<div style="font-size:.66rem;color:var(--green-dim);margin-top:.1rem">↳ '+esc(ev.detail||ev.significance||'')+'</div>';
+    evEl.appendChild(d);
+  });
+
+  // Suspects
+  const scEl=document.getElementById('det-suspect-cards');
+  scEl.innerHTML='';
+  (j.suspects||[]).forEach(s=>{
+    const qCount=(detWitnessChats[s.id]||[]).length;
+    const d=document.createElement('div');
+    d.style.cssText='border:1px solid var(--border);padding:.8rem;margin-bottom:.5rem;cursor:pointer;transition:all .2s;';
+    d.id='sc-'+s.id;
+    d.innerHTML='<div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem;">'
+      +'<span style="color:var(--purple);font-size:.8rem;font-weight:bold">'+esc(s.name||'')+'</span>'
+      +'<span style="font-size:.62rem;color:var(--text-dim);margin-left:auto">'+s.age+'y</span></div>'
+      +'<div style="font-size:.68rem;color:var(--text-dim);margin-bottom:.2rem">'+esc(s.role||'')+'</div>'
+      +'<div style="font-size:.65rem;color:var(--text-dim)">ALIBI: <span style="color:var(--text)">'+esc(s.alibi||'?')+'</span></div>'
+      +'<div style="margin-top:.5rem;display:flex;gap:.3rem;flex-wrap:wrap;">'
+      +'<button class="btn btn-sm btn-p" onclick="openInterrogation(\''+s.id+'\')" style="margin-top:0">🗣 INTERROGATE</button>'
+      +'<span style="font-size:.6rem;color:var(--text-dim);align-self:center" id="sc-qct-'+s.id+'">'+qCount+' Qs</span>'
+      +'</div>';
+    d.onmouseenter=()=>{d.style.borderColor='var(--purple)';d.style.background='rgba(191,95,255,.04)';};
+    d.onmouseleave=()=>{d.style.borderColor=detActiveWitness===s.id?'var(--cyan)':'var(--border)';d.style.background='';};
+    scEl.appendChild(d);
+  });
+}
+
+function openInterrogation(sid){
+  const s=detCase.suspects.find(x=>x.id===sid);
+  if(!s)return;
+  detActiveWitness=sid;
+  if(!detWitnessChats[sid])detWitnessChats[sid]=[];
+  document.getElementById('det-interrogation').style.display='block';
+  document.getElementById('det-intr-name').textContent='INTERROGATING: '+s.name.toUpperCase();
+  document.getElementById('det-intr-role').textContent=s.role+' • Age: '+s.age+' • '+s.personality;
+  // Quick questions
+  const qs=['სად იყავი დანაშაულის დროს?','გქონდა თუ არა კონფლიქტი მსხვერპლთან?','ვინ ეჭვობ შენ?','ჩვენ გვაქვს მტკიცებულება — ახსენი!','რატომ ტყუი ალიბიზე?'];
+  document.getElementById('det-quick-qs').innerHTML=qs.map(q=>`<button class="btn btn-sm" onclick="detQuickQ('${q.replace(/'/g,"\\'")}\')" style="margin-top:0;font-size:.62rem;border-color:var(--border);color:var(--text-dim)">${q}</button>`).join('');
+  // Render existing chat
+  renderIntrLog(sid);
+  document.getElementById('det-inp').focus();
+  document.getElementById('det-interrogation').scrollIntoView({behavior:'smooth',block:'start'});
+  // Highlight suspect card
+  document.querySelectorAll('[id^="sc-"]').forEach(el=>{el.style.borderColor='var(--border)';});
+  const card=document.getElementById('sc-'+sid);
+  if(card)card.style.borderColor='var(--cyan)';
+}
+
+function closeInterrogation(){
+  detActiveWitness=null;
+  document.getElementById('det-interrogation').style.display='none';
+}
+
+function renderIntrLog(sid){
+  const log=document.getElementById('det-intr-log');
+  const msgs=detWitnessChats[sid]||[];
+  if(!msgs.length){log.innerHTML='<div style="color:var(--text-dim);font-size:.73rem;">◈ დაკითხვა ჯერ არ დაწყებულა.</div>';return;}
+  log.innerHTML=msgs.map(m=>`<div class="det-msg ${m.role==='user'?'user-m':'ai-m'}">${m.role==='user'?'▶ YOU: ':'◈ '+esc(detCase.suspects.find(s=>s.id===sid)?.name||'')}: '}${esc(m.content)}</div>`).join('');
+  log.scrollTop=log.scrollHeight;
+}
+
+function detQuickQ(q){document.getElementById('det-inp').value=q;detSend();}
+
+async function detSend(){
+  if(!detActiveWitness||!detCase){toast('⚠ ჯერ მოწმე ავირჩიე');return;}
+  const inp=document.getElementById('det-inp');
+  const txt=inp.value.trim();if(!txt)return;
+  inp.value='';
+  const sid=detActiveWitness;
+  const s=detCase.suspects.find(x=>x.id===sid);
+  if(!detWitnessChats[sid])detWitnessChats[sid]=[];
+  detWitnessChats[sid].push({role:'user',content:txt});
+  renderIntrLog(sid);
+  detQCount++;
+  document.getElementById('det-q-count').textContent=detQCount;
+  const xpEst=Math.max(5,30-detQCount*2);
+  document.getElementById('det-xp-earn').textContent='+'+xpEst;
+  document.getElementById('sc-qct-'+sid).textContent=detWitnessChats[sid].filter(m=>m.role==='user').length+' Qs';
+  const btn=document.getElementById('det-send-btn');btn.disabled=true;btn.textContent='...';
+  try{
+    const history=detWitnessChats[sid].slice(-6);
+    const sys=`You are ${s.name} (${s.role}, age ${s.age}). Case: "${detCase.title}". Victim: ${detCase.victim}. Time of crime: ${detCase.time_of_crime}. Location: ${detCase.location}.
+Your alibi: "${s.alibi}". Your secret (DO NOT reveal directly): "${s.secret}". ${s.is_culprit?`YOU ARE THE CULPRIT. Motive: "${s.motive}". Be defensive, slightly nervous, give misleading answers, never confess directly.`:`You are INNOCENT. Motive if any: "${s.motive}". Be honest but nervous (you're being interrogated). React to accusations strongly.`}
+Personality: ${s.personality}
+Evidence in case: ${(detCase.evidence||[]).map(e=>e.item).join(', ')}.
+Rules: Respond in Georgian ONLY. 2-4 sentences max. Stay in character always. React naturally to pressure.`;
+    const msgs=[{role:'system',content:sys},...history.map(m=>({role:m.role==='user'?'user':'assistant',content:m.content}))];
+    const resp=await callGroq(msgs,350);
+    detWitnessChats[sid].push({role:'ai',content:resp});
+    renderIntrLog(sid);
+    addDetNote('['+s.name+'] '+resp.slice(0,80)+(resp.length>80?'...':''),'witness');
+  }catch(e){
+    detWitnessChats[sid].push({role:'ai',content:'⚠ '+e.message});
+    renderIntrLog(sid);
+  }
+  btn.disabled=false;btn.textContent='► ASK';
+}
+
+function addDetNote(txt,type='case'){
+  const log=document.getElementById('det-chat-log');
+  const d=document.createElement('div');
+  d.className='det-msg '+(type==='case'?'ai-m':type==='witness'?'ai-m':'solved');
+  d.style.borderColor=type==='witness'?'var(--purple)':type==='solved'?'var(--green)':'var(--green-dim)';
+  d.innerHTML=esc(txt);
+  log.appendChild(d);log.scrollTop=log.scrollHeight;
+}
+
+async function detAccuse(){
+  if(!detCase){toast('⚠ ჯერ საქმე გახსენი');return;}
+  const list=detCase.suspects.map((s,i)=>(i+1)+'. '+s.name+' ('+s.role+')').join('\n');
+  const suspect=prompt('⚖ ვინ არის დამნაშავე?\n\n'+list+'\n\nჩაწერე სახელი:');
+  if(!suspect)return;
+  const culprit=detCase.suspects.find(s=>s.is_culprit);
+  const named=detCase.suspects.find(s=>s.name.toLowerCase().includes(suspect.toLowerCase().trim()));
+  const correct=named&&named.is_culprit;
+  if(correct){
+    const xpGain=Math.max(5,40-detQCount*2);
+    addXP(xpGain,'Mystery Solved!');
+    detSolved=true;
+    addDetNote('✅ SOLVED! '+culprit.name+' — '+detCase.solution,'solved');
+    toast('🎉 SOLVED! +'+xpGain+' XP!','');
+    document.getElementById('det-xp-earn').textContent='+'+xpGain+' ✓';
+  } else {
+    const hint=culprit?'💡 Hint: Check the evidence more carefully. The real culprit\'s alibi doesn\'t add up.':'';
+    addDetNote('❌ არასწორი. '+hint,'case');
+    toast('❌ არასწორი — კიდევ დაიკვლიე!');
+  }
+}
+
+async function detGiveUp(){
+  if(!detCase){toast('⚠ ჯერ საქმე გახსენი');return;}
+  if(!confirm('დანებდები? სრული გამოსავალი გამოჩნდება.'))return;
+  const culprit=detCase.suspects.find(s=>s.is_culprit);
+  addDetNote('📖 SOLUTION: '+esc(detCase.solution||'')+(culprit?'\n\nCULPRIT: '+culprit.name:''),'solved');
+}
+
+// ══════════════════════════════════════════
+// MUSIC
+// ══════════════════════════════════════════
+const MUSIC_DATA=[
+  {cat:'lofi',emoji:'🎵',title:'ChilledCow Lo-Fi Beats',desc:'კლასიკური Lo-Fi Hip-Hop — სწავლისა და ფოკუსისთვის',url:'https://www.youtube.com/watch?v=jfKfPfyJRdk',tag:'LO-FI'},
+  {cat:'lofi',emoji:'🌙',title:'Lofi Girl — Night Vibes',desc:'ღამის Lo-Fi ატმოსფერო — კონცენტრაციისთვის',url:'https://www.youtube.com/watch?v=rUxyKA_-grg',tag:'NIGHT'},
+  {cat:'focus',emoji:'🧠',title:'Binaural Beats — Focus 40Hz',desc:'Gamma ტალღები — გონებრივი სიმახვილე',url:'https://www.youtube.com/watch?v=WPni755-Krg',tag:'GAMMA'},
+  {cat:'focus',emoji:'⚡',title:'Study Music Alpha Waves',desc:'Alpha ბრეინ ვეივი — დასვენება + ფოკუსი',url:'https://www.youtube.com/watch?v=WD6edzKDmf0',tag:'ALPHA'},
+  {cat:'focus',emoji:'🔮',title:'Deep Focus — 4 Hours',desc:'ღრმა ფოკუსის რეჟიმი — პროდუქტიულობა',url:'https://www.youtube.com/watch?v=hHW1oY26kxQ',tag:'DEEP'},
+  {cat:'energy',emoji:'🔥',title:'Epic Study Motivation',desc:'ძლიერი ინსტრუმენტული — სამოტივაციო',url:'https://www.youtube.com/results?search_query=epic+study+motivation+music',tag:'EPIC'},
+  {cat:'energy',emoji:'⚔',title:'Hans Zimmer Instrumentals',desc:'ოსკარდამსახურებული კინო მუსიკა',url:'https://www.youtube.com/results?search_query=hans+zimmer+study+music',tag:'CINEMATIC'},
+  {cat:'energy',emoji:'🚀',title:'Cyberpunk Study Mix',desc:'Synthwave — კიბერპანკ ატმოსფერო',url:'https://www.youtube.com/results?search_query=cyberpunk+synthwave+study',tag:'SYNTHWAVE'},
+  {cat:'nature',emoji:'🌊',title:'Ocean Waves + Rain',desc:'ბუნების ხმები — სტრესის შემამცირებელი',url:'https://www.youtube.com/watch?v=kgx4WGK0oNU',tag:'NATURE'},
+  {cat:'nature',emoji:'🌧',title:'Rain on Window',desc:'წვიმის ხმა — ღრმა კონცენტრაციისთვის',url:'https://www.youtube.com/watch?v=mPZkdNFkNps',tag:'RAIN'},
+  {cat:'nature',emoji:'🌲',title:'Forest Ambience',desc:'ტყის ხმები — სიმშვიდე და ფოკუსი',url:'https://www.youtube.com/results?search_query=forest+ambience+study',tag:'FOREST'},
+  {cat:'classical',emoji:'🎻',title:'Mozart for Brain Power',desc:'Mozart Effect — IQ-ს ამაღლება კვლევებით',url:'https://www.youtube.com/watch?v=iUohO2MSot8',tag:'MOZART'},
+  {cat:'classical',emoji:'🎹',title:'Beethoven Piano Sonatas',desc:'კლასიკური პიანო — სიღრმისეული ფოკუსი',url:'https://www.youtube.com/results?search_query=beethoven+piano+study+music',tag:'BEETHOVEN'},
+  {cat:'classical',emoji:'🎼',title:'Bach for Concentration',desc:'Bach-ის სტრუქტურა — ლოგიკური აზროვნება',url:'https://www.youtube.com/results?search_query=bach+concentration+study',tag:'BACH'},
+];
+let currentMCat='all';
+function filterMusic(cat,btn){
+  currentMCat=cat;
+  document.querySelectorAll('.mcat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMusic();
+}
+function renderMusic(){
+  const grid=document.getElementById('music-grid');
+  if(!grid)return;
+  const filtered=currentMCat==='all'?MUSIC_DATA:MUSIC_DATA.filter(m=>m.cat===currentMCat);
+  grid.innerHTML=filtered.map(m=>`
+  <a href="${m.url}" target="_blank" class="music-card">
+    <div class="mc-emoji">${m.emoji}</div>
+    <div class="mc-title">${esc(m.title)}</div>
+    <div class="mc-desc">${esc(m.desc)}</div>
+    <div class="mc-tag">${m.tag}</div>
+  </a>`).join('');
+}
+
+// ══════════════════════════════════════════
+// LEARN
+// ══════════════════════════════════════════
+async function genLearn(){
+  if(!S.key)return;
+  const start=document.getElementById('l-start').value;
+  const dur=document.getElementById('l-dur').value;
+  const gym=document.getElementById('l-gym').value;
+  const sleep=document.getElementById('l-sleep').value;
+  const subj=document.getElementById('l-subj').value;
+  const weeks=document.getElementById('l-weeks').value;
+  const level=document.getElementById('l-level').value;
+  if(!subj){toast('⚠ საგანი შეიყვანე');return;}
+  const sd=document.getElementById('sched-display');
+  sd.style.display='grid';
+  sd.innerHTML=[
+    {l:'📚 სწავლა',v:start+' ('+dur+'სთ)'},
+    {l:'💪 ვარჯიში',v:gym},
+    {l:'💤 ძილი',v:sleep},
+    {l:'📅 ხანგრძლივობა',v:weeks+' კვირა'},
+  ].map(i=>'<div class="sched-time-card"><div class="stc-label">'+i.l+'</div><div class="stc-val">'+i.v+'</div></div>').join('');
+  const out=document.getElementById('learn-out');
+  out.innerHTML='<div style="color:var(--text-dim);font-size:.75rem;padding:.8rem 0;animation:blink 1s infinite">◈ AI ქმნის სასწავლო გეგმას + ვიდეოებს...</div>';
+  const sys='You are a study plan generator. Return ONLY a valid JSON object. No markdown, no code blocks, no explanation. Just raw JSON.';
+  const userPrompt='Create a '+weeks+'-week study plan for topic: "'+subj+'" (level: '+level+', '+dur+' hours/day). Return ONLY this JSON:\n{"weeks":[{"week":1,"title":"Week theme in language of topic","lessons":[{"num":1,"title":"Lesson title","duration":"25min","desc":"2 sentence lesson description","youtube_search":"best English YouTube search query for this lesson","tip":"practical study tip"}]}]}\nMake exactly '+weeks+' weeks, 3 lessons each. youtube_search must be in English for best results. Keep titles concise.';
+  try{
+    const raw=await callGroq([{role:'system',content:sys},{role:'user',content:userPrompt}],1800);
+    let json=null;
+    try{json=parseJSON(raw);}catch(e){
+      const m=raw.match(/\{[\s\S]*\}/);
+      if(m){try{json=JSON.parse(m[0].replace(/,\s*([}\]])/g,'$1'));}catch(e2){}}
+    }
+    if(!json||!json.weeks)throw new Error('AI-მ სწორი სასწავლო გეგმა ვერ შექმნა. სცადე ხელახლა.');
+    out.innerHTML='';
+    // Daily schedule tip
+    const schedTip=document.createElement('div');
+    schedTip.style.cssText='background:rgba(0,255,65,.04);border:1px solid var(--border);padding:.9rem;margin-bottom:1.2rem;font-size:.76rem;color:var(--text-dim);line-height:1.8;';
+    schedTip.innerHTML='<span style="color:var(--green)">◈ შენი ყოველდღიური განრიგი:</span><br>'
+      +'🌅 '+start+' — სწავლა იწყება (Pomodoro 25/5 მეთოდი)<br>'
+      +'💪 '+gym+' — ვარჯიში (მოქნილი ტვინი = უკეთესი სწავლა!)<br>'
+      +'💤 '+sleep+' — ძილი (ძილი = მეხსიერება ჩაიწერება)<br>'
+      +'<span style="color:var(--cyan)">💡 რჩევა: Active Recall — გაიმეორე მასალა ხმამაღლა ყოველი Pomodoro-ს შემდეგ</span>';
+    out.appendChild(schedTip);
+    (json.weeks||[]).forEach(w=>{
+      const wb=document.createElement('div');wb.className='week-block';
+      wb.innerHTML='<div class="week-head">WEEK '+w.week+' — '+esc(w.title||'')+'</div>';
+      (w.lessons||[]).forEach(l=>{
+        const ytQ=encodeURIComponent((l.youtube_search||l.title||subj)+' tutorial');
+        const ytUrl='https://www.youtube.com/results?search_query='+ytQ;
+        const li=document.createElement('div');li.className='lesson-item';
+        li.innerHTML='<div class="l-num">'+(l.num||'◈')+'</div><div class="l-info">'
+          +'<div class="l-title">'+esc(l.title||'')+'</div>'
+          +'<div class="l-meta">⏱ '+esc(l.duration||'25min')+'</div>'
+          +'<div class="l-meta" style="margin-top:.2rem;">'+esc(l.desc||'')+'</div>'
+          +'<div class="l-meta" style="color:var(--cyan);margin-top:.2rem;">💡 '+esc(l.tip||'')+'</div>'
+          +'<div style="display:flex;gap:.4rem;margin-top:.4rem;flex-wrap:wrap;">'
+          +'<a href="'+ytUrl+'" target="_blank" class="l-link">▶ YouTube</a>'
+          +'<a href="https://www.google.com/search?q='+encodeURIComponent(l.title||subj)+'+tutorial+free" target="_blank" class="l-link" style="border-color:var(--text-dim);color:var(--text-dim)">🔗 Google</a>'
+          +'</div>'
+          +'</div>';
+        wb.appendChild(li);
+      });
+      out.appendChild(wb);
+    });
+    addXP(8,'Learning plan!');
+    toast('📚 სასწავლო გეგმა მზადაა! +8 XP');
+  }catch(e){
+    out.innerHTML='<div style="color:var(--red);font-size:.76rem;padding:.8rem 0;">⚠ '+esc(e.message)+'<br><button class="btn btn-sm" onclick="genLearn()" style="margin-top:.4rem">↺ სცადე ხელახლა</button></div>';
+  }
+}
+
+
+// ══════════════════════════════════════════
+// MOTIVATION ENGINE
+// ══════════════════════════════════════════
+let pomoInterval=null,pomoSec=25*60,pomoRunning=false,pomoDone=0;
+
+function pomoToggle(){
+  if(pomoRunning){clearInterval(pomoInterval);pomoRunning=false;document.getElementById('pomo-btn').textContent='► RESUME';}
+  else{pomoRunning=true;document.getElementById('pomo-btn').textContent='⏸ PAUSE';
+    pomoInterval=setInterval(()=>{
+      pomoSec--;pomoUpdateDisplay();
+      if(pomoSec<=0){clearInterval(pomoInterval);pomoRunning=false;
+        pomoDone++;document.getElementById('pomo-count').textContent=pomoDone;
+        document.getElementById('pomo-btn').textContent='► START';
+        document.getElementById('pomo-status').textContent='✅ DONE! Take a break!';
+        addXP(10,'Pomodoro!');toast('🍅 Pomodoro +10 XP!');
+        try{new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFhYF9dXBtam1wcnR2eHh2c3BubW5vb3BxcnN0dXZ3eHl6e3x9fn+AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6ChoqOkpaanqKmqq6ytrq+wsbKztLW2t7i5uru8vb6/wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX2Nna29zd3t/g4eLj5OXm5+jp6uvs7e7v8PHy8/T19vf4+fr7/P3+/w==').play();}catch(e){}
+      }
+    },1000);
+  }
+}
+function pomoReset(){clearInterval(pomoInterval);pomoRunning=false;pomoSec=25*60;pomoUpdateDisplay();document.getElementById('pomo-btn').textContent='► START';document.getElementById('pomo-status').textContent='FOCUS SESSION • 25 MIN';}
+function pomoSet(min){clearInterval(pomoInterval);pomoRunning=false;pomoSec=min*60;pomoUpdateDisplay();document.getElementById('pomo-btn').textContent='► START';document.getElementById('pomo-status').textContent=(min===5?'☕ BREAK':'🎯 FOCUS')+' • '+min+' MIN';}
+function pomoUpdateDisplay(){const m=Math.floor(pomoSec/60),s=pomoSec%60;document.getElementById('pomo-display').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+
+const MOTIV_PROMPTS={
+  energy:'მომეცი 5 ძლიერი სამოტივაციო ფრაზა ენერგიის გასაძლიერებლად. ბრაზი ტონი, ACTION-ზე ორიენტირებული. ქართულად.',
+  focus:'როგორ ჩავაქტიურო ღრმა ფოკუსი 25 წუთში? მომეცი კონკრეტური ნაბიჯები.',
+  confidence:'5 ძლიერი affirmation თვითრწმენის გასაძლიერებლად. ქართულად, პირველ პირში.',
+  study:'სწავლისთვის საუკეთესო mental framework — ახსენი Active Recall, Spaced Repetition, Feynman Technique ქართულად, პრაქტიკულ მაგალითებთან ერთად.',
+  lazy:'მე ვზარმაცობ და ვიცი ეს. გამახვილე — მკაცრად, სერიოზულად, ბრაზით. არ დამინდო. ქართულად.',
+  goal:'დამეხმარე SMART მიზნის დასახვაში. მომეცი შაბლონი + 30-დღიანი challenge ქართულად.'
+};
+
+async function motivBoost(type){
+  const out=document.getElementById('motiv-out');
+  const txt=document.getElementById('motiv-text');
+  out.style.display='block';
+  txt.textContent='◈ Loading...';
+  out.scrollIntoView({behavior:'smooth',block:'nearest'});
+  try{
+    const resp=await callGemini(MOTIV_PROMPTS[type],'შენ ხარ პარასკევა — ენერგიული, პირდაპირი, action-ზე ორიენტირებული. ქართულად, მოკლედ და ძლიერად.',600);
+    txt.textContent=resp;
+    addXP(3,'Motivation!');
+  }catch(e){txt.textContent='⚠ '+e.message;}
+}
+async function motivCustom(){
+  const q=document.getElementById('motiv-custom').value.trim();
+  if(!q){toast('⚠ ჩაწერე რა გჭირდება');return;}
+  const out=document.getElementById('motiv-out');
+  const txt=document.getElementById('motiv-text');
+  out.style.display='block';txt.textContent='◈ Generating...';
+  out.scrollIntoView({behavior:'smooth',block:'nearest'});
+  try{
+    const resp=await callGemini(q,'შენ ხარ პარასკევა — ენერგიული, მოტივაციური, action-ზე ორიენტირებული კოუჩი. ქართულად.',700);
+    txt.textContent=resp;addXP(3,'Motivation!');
+  }catch(e){txt.textContent='⚠ '+e.message;}
+}
+function copyMotiv(){
+  navigator.clipboard.writeText(document.getElementById('motiv-text').textContent).then(()=>toast('✓ Copied!'));
+}
+
+// ══════════════════════════════════════════
+// DAILY TASKS SYSTEM
+// ══════════════════════════════════════════
+const TASK_XP={easy:5,medium:7,hard:10};
+const DEFAULT_TASKS=[
+  {id:'dt1',text:'10 წუთი წიგნის კითხვა',diff:'easy',done:false},
+  {id:'dt2',text:'1 Pomodoro სწავლა (25 წუთი)',diff:'medium',done:false},
+  {id:'dt3',text:'Detective საქმე გადახდე',diff:'hard',done:false},
+  {id:'dt4',text:'5 ახალი სიტყვა ისწავლე',diff:'easy',done:false},
+  {id:'dt5',text:'გამეორე გუშინდელი მასალა',diff:'medium',done:false},
+];
+
+function loadDailyTasks(){
+  const today=new Date().toDateString();
+  const saved=lsj('pv_daily',null);
+  if(saved&&saved.date===today)return saved.tasks;
+  const fresh=DEFAULT_TASKS.map(t=>({...t,done:false}));
+  saveDailyTasksStore(fresh);
+  return fresh;
+}
+function saveDailyTasksStore(tasks){
+  localStorage.setItem('pv_daily',JSON.stringify({date:new Date().toDateString(),tasks}));
+}
+function renderDailyTasks(){
+  const tasks=loadDailyTasks();
+  const el=document.getElementById('daily-tasks-list');
+  if(!el)return;
+  const colors={easy:'var(--green)',medium:'var(--cyan)',hard:'var(--red)'};
+  const icons={easy:'▲',medium:'►',hard:'◆'};
+  const done=tasks.filter(t=>t.done).length;
+  const totalXP=tasks.filter(t=>t.done).reduce((s,t)=>s+(TASK_XP[t.diff]||5),0);
+  let html='';
+  tasks.forEach(t=>{
+    const xp=TASK_XP[t.diff]||5;
+    const col=colors[t.diff]||'var(--green)';
+    const ic=icons[t.diff]||'►';
+    html+=`<div style="display:flex;align-items:center;gap:.7rem;padding:.55rem 0;border-bottom:1px solid var(--border);${t.done?'opacity:.45;':''}">
+      <input type="checkbox" ${t.done?'checked':''} onchange="completeTask('${t.id}',this.checked)" style="accent-color:var(--green);width:16px;height:16px;cursor:pointer;flex-shrink:0;">
+      <div style="flex:1;font-size:.78rem;color:${t.done?'var(--text-dim)':'var(--text)'};${t.done?'text-decoration:line-through;':''}">${esc(t.text)}</div>
+      <span style="font-size:.62rem;color:${col};border:1px solid ${col};padding:.06rem .35rem;flex-shrink:0;">${ic} ${t.diff.toUpperCase()}</span>
+      <span style="font-size:.72rem;color:var(--yellow);flex-shrink:0;">+${xp}</span>
+    </div>`;
+  });
+  html+=`<div style="margin-top:.6rem;display:flex;justify-content:space-between;font-size:.68rem;color:var(--text-dim);">
+    <span>დასრულებული: <span style="color:var(--green)">${done}/${tasks.length}</span></span>
+    <span>დღის XP: <span style="color:var(--yellow)">⚡${totalXP}</span></span>
+  </div>`;
+  el.innerHTML=html;
+}
+function completeTask(id,checked){
+  const tasks=loadDailyTasks();
+  const task=tasks.find(t=>t.id===id);
+  if(!task)return;
+  if(checked&&!task.done){
+    task.done=true;
+    const xp=TASK_XP[task.diff]||5;
+    saveDailyTasksStore(tasks);
+    addXP(xp,task.text);
+    renderDailyTasks();
+    toast('✓ '+task.text+' — +'+xp+' XP');
+  }else if(!checked&&task.done){
+    task.done=false;
+    saveDailyTasksStore(tasks);
+    renderDailyTasks();
+  }
+}
+function resetDailyTasks(){
+  const fresh=DEFAULT_TASKS.map(t=>({...t,done:false}));
+  saveDailyTasksStore(fresh);
+  renderDailyTasks();
+  toast('↺ Tasks Reset');
+}
+async function genDailyTasks(){
+  const el=document.getElementById('daily-tasks-list');
+  if(el)el.innerHTML='<div style="color:var(--text-dim);font-size:.73rem;animation:blink 1s infinite">◈ AI ქმნის დღიურ დავალებებს...</div>';
+  try{
+    const raw=await callGemini(
+      'Create 5 daily study/self-improvement tasks in Georgian language. Mix of difficulties. Return ONLY a JSON array:\n[{"id":"dt1","text":"task in Georgian (6-10 words max)","diff":"easy"},{"id":"dt2","text":"task2","diff":"medium"},{"id":"dt3","text":"task3","diff":"hard"},{"id":"dt4","text":"task4","diff":"easy"},{"id":"dt5","text":"task5","diff":"medium"}]\nOnly valid options for diff: easy, medium, hard. Tasks about: studying, reading, coding, exercise, review, notes, vocab. Only JSON array!',
+      '',500
+    );
+    const m=raw.match(/\[[\s\S]*\]/);
+    if(!m)throw new Error('No array found');
+    const arr=JSON.parse(m[0]);
+    if(!Array.isArray(arr)||!arr.length)throw new Error('Invalid array');
+    const tasks=arr.slice(0,5).map((t,i)=>({...t,id:'dt'+(i+1),done:false,diff:['easy','medium','hard'].includes(t.diff)?t.diff:'easy'}));
+    saveDailyTasksStore(tasks);
+    renderDailyTasks();
+    toast('📋 ახალი AI დავალებები!');
+  }catch(e){
+    renderDailyTasks();
+    toast('⚠ AI failed — default tasks');
+  }
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// PRIZES & LEADERBOARD
+// ══════════════════════════════════════════
+const PRIZES=[
+  {id:'p1',name:'აგათა კრისტი — "და მერე არავინ დარჩა"',emoji:'📖',xp:5000,desc:'ბესტსელერი დეტექტივი — 20₾ ფასი',available:true,isPremium:false},
+  {id:'p2',name:'აგათა კრისტი — "ეჰო მკვდრეთით"',emoji:'📗',xp:7000,desc:'პუარო-ს საუკეთესო საქმე — 20₾',available:true,isPremium:false},
+  {id:'p3',name:'აგათა კრისტი — "ქსოვილი ოდიუმ"',emoji:'📕',xp:9000,desc:'მის მარპლის კლასიკა — 20₾',available:true,isPremium:false},
+  {id:'p4',name:'⚡ PREMIUM PARASKEVA — ულიმიტო + ლიდერბორდი',emoji:'⚡',xp:50000,desc:'ულიმიტო გამოყენება + ლიდერბორდი — 20₾',available:true,isPremium:true},
+  {id:'p5',name:'🏅 VIP BADGE + სახელი ლიდერბორდში',emoji:'🏅',xp:30000,desc:'სპეციალური VIP ჯილდო',available:true,isPremium:false},
+];
+
+function renderPrizes(){
+  const grid=document.getElementById('prizes-grid');
+  if(!grid)return;
+  // Premium banner
+  const banner=document.getElementById('premium-banner-active');
+  const buyCard=document.getElementById('premium-buy-card');
+  if(banner)banner.style.display=S.hasPremium?'block':'none';
+  if(buyCard)buyCard.style.display=S.hasPremium?'none':'block';
+  const myXP=S.xp;
+  grid.innerHTML=PRIZES.map(p=>{
+    const canBuy=myXP>=p.xp&&p.available;
+    const pct=Math.min(100,Math.round(myXP/p.xp*100));
+    return '<div style="border:1px solid '+(canBuy?'var(--yellow)':'var(--border)')+';padding:1rem;opacity:'+(p.available?1:.5)+';">'
+      +'<div style="font-size:1.8rem;margin-bottom:.4rem">'+p.emoji+'</div>'
+      +'<div style="font-size:.72rem;color:'+(canBuy?'var(--yellow)':'var(--text)')+';margin-bottom:.25rem">'+esc(p.name)+'</div>'
+      +'<div style="font-size:.65rem;color:var(--text-dim);margin-bottom:.5rem">'+esc(p.desc)+'</div>'
+      +'<div style="font-size:.68rem;color:var(--yellow);margin-bottom:.4rem">⚡ '+p.xp.toLocaleString()+' XP</div>'
+      +'<div style="background:var(--bg);height:4px;margin-bottom:.5rem"><div style="height:100%;background:var(--yellow);width:'+pct+'%"></div></div>'
+      +(canBuy?'<button class="btn btn-y btn-sm" onclick="buyPrize(\''+p.id+'\')" style="width:100%;margin-top:0;">🛒 აირჩიე</button>'
+        :'<div style="font-size:.65rem;color:var(--text-dim)">'+pct+'% — გჭირდება '+(p.xp-myXP).toLocaleString()+' XP-ი</div>')
+      +'</div>';
+  }).join('');
+  // XP bar
+  const bar=document.getElementById('xp-prog-bar');
+  const txt=document.getElementById('xp-prog-txt');
+  if(bar){bar.style.width=Math.min(100,Math.round(myXP/50000*100))+'%';}
+  if(txt){txt.textContent=myXP.toLocaleString()+' / 50,000';}
+  renderLeaderboard();
+}
+
+function buyPrize(pid){
+  const p=PRIZES.find(x=>x.id===pid);
+  if(!p)return;
+  if(S.xp<p.xp){toast('⚡ გჭირდება '+(p.xp-S.xp).toLocaleString()+' XP-ი');return;}
+  if(!confirm('🛒 "'+p.name+'"\n\n'+p.xp.toLocaleString()+' XP დაიხარჯება.\nParaskeva.AI-ს დაუკავშირდი!')){return;}
+  S.xp-=p.xp;save();
+  toast('🎉 '+p.name+' — მადლობა! Paraskeva Premium ✅');
+  refreshUI();renderPrizes();
+}
+
+// ══════════════════════════════════════════
+// PAYMENT & UNLOCK CODE SYSTEM
+// ══════════════════════════════════════════
+
+// ═══════════════════════════════════════════
+// IBAN PAYMENT SYSTEM
+// ═══════════════════════════════════════════
+const PARASKEVA_IBAN='GE87TB7713045068100047';
+
+function copyIBAN(){
+  navigator.clipboard.writeText(PARASKEVA_IBAN).then(()=>{
+    const btn=document.getElementById('copy-iban-btn');
+    if(btn){btn.textContent='✓ კოპირებულია!';btn.style.color='var(--green)';btn.style.borderColor='var(--green)';}
+    toast('✓ IBAN კოპირებულია!');
+    setTimeout(()=>{if(btn){btn.textContent='⧉ IBAN კოპირება';btn.style.color='';btn.style.borderColor='';}},2000);
+  }).catch(()=>{
+    // fallback
+    const el=document.createElement('textarea');
+    el.value=PARASKEVA_IBAN;
+    document.body.appendChild(el);el.select();document.execCommand('copy');document.body.removeChild(el);
+    toast('✓ IBAN კოპირებულია!');
+  });
+}
+
+let screenUploaded=false;
+
+function handleScreenDrop(e){
+  e.preventDefault();
+  document.getElementById('upload-area').style.borderColor='var(--green-dim)';
+  const file=e.dataTransfer.files[0];
+  if(file&&file.type.startsWith('image/')){processScreenFile(file);}
+  else{toast('⚠ სურათის ფაილი ატვირთე (JPG, PNG)');}
+}
+
+function handleScreenUpload(input){
+  const file=input.files[0];
+  if(file)processScreenFile(file);
+}
+
+function processScreenFile(file){
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    const img=document.getElementById('screen-img');
+    const preview=document.getElementById('screen-preview');
+    const uploadArea=document.getElementById('upload-area');
+    const confirmBtn=document.getElementById('confirm-pay-btn');
+    if(img)img.src=e.target.result;
+    if(preview)preview.style.display='block';
+    if(uploadArea)uploadArea.style.borderColor='var(--green)';
+    if(confirmBtn)confirmBtn.style.display='block';
+    screenUploaded=true;
+    document.getElementById('upload-msg').innerHTML=
+      '<span style="color:var(--green)">✓ სქრინი მიღებულია — დააჭირე Premium გააქტიურებას!</span>';
+  };
+  reader.readAsDataURL(file);
+}
+
+function confirmPayment(){
+  if(!screenUploaded){toast('⚠ ჯერ სქრინი ატვირთე');return;}
+  const btn=document.getElementById('confirm-pay-btn');
+  if(btn){btn.disabled=true;btn.textContent='⏳ მოწმდება...';}
+  // Simulate brief verification
+  setTimeout(()=>{
+    document.getElementById('upload-msg').innerHTML=
+      '<span style="color:var(--green);font-size:.8rem;">✅ გადარიცხვა დადასტურდა! Premium გააქტიურდა!</span>';
+    setTimeout(()=>{
+      activatePremium();
+    },800);
+  },1500);
+}
+
+// Unlock codes — სისტემა: PARA-[HASH]
+// კოდი = "PARA-" + 4 ნიშნა ჯგუფი
+// შენ (ადმინი) ქმნი კოდებს ქვემოთ — დაამატე ყოველი გადახდის შემდეგ
+// კოდები hashed ინახება — უსაფრთხოა
+const VALID_CODES_HASHED=[
+  // ═══ ADMIN: კოდები — ყოველი გადახდის შემდეგ დაამატე ახალი ═══
+  // კოდის hash-ის გენერაციისთვის: hashCode('PARA-XXXX-XXXX')
+  // ═══ DEMO CODES (სატესტო) ═══
+  3106366127, // PARA-TEST-0001
+  787725565,  // PARA-DEMO-2024
+  3188103494, // PARA-PREM-GIFT
+  // ═══ REAL CODES — დაამატე ახლის შემდეგ ქვემოთ ═══
+  3857804803, // PARA-WAJH-ZX6C
+  1276733702, // PARA-PAGS-AGWT
+  2262006564, // PARA-HU3A-3YLE
+  4012183475, // PARA-8LCD-5V3Z
+  3525083351, // PARA-T9NT-4V5U
+];
+
+function hashCode(str){
+  let h=0;
+  for(let i=0;i<str.length;i++){h=Math.imul(31,h)+str.charCodeAt(i)|0;}
+  return h>>>0;
+}
+
+function openPayment(type){
+  const info=PAYMENT_INFO[type];
+  if(!info)return;
+  const el=document.getElementById('payment-info');
+  if(!el)return;
+  el.style.display='block';
+  el.innerHTML=
+    '<div style="font-size:.65rem;color:var(--cyan);letter-spacing:2px;margin-bottom:.5rem;">▣ '+info.title.toUpperCase()+' — ინსტრუქცია</div>'
+    +info.steps
+    +'<div style="margin-top:.7rem;font-size:.7rem;color:var(--text-dim);">'+CONTACT_INFO+'</div>'
+    +'<div style="margin-top:.5rem;font-size:.68rem;color:var(--green);">გადახდის შემდეგ 30 წუთში მიიღებ Unlock Code-ს!</div>';
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function redeemCode(){
+  const inp=document.getElementById('unlock-code-inp');
+  const msg=document.getElementById('unlock-msg');
+  const raw=(inp.value||'').trim().toUpperCase();
+  if(!raw){msg.style.color='var(--red)';msg.textContent='⚠ შეიყვანე კოდი';return;}
+  if(!raw.startsWith('PARA-')){msg.style.color='var(--red)';msg.textContent='⚠ კოდი PARA-ით იწყება';return;}
+
+  // Check if already used
+  const usedCodes=lsj('pv_used_codes',[]);
+  const h=hashCode(raw);
+  if(usedCodes.includes(h)){msg.style.color='var(--red)';msg.textContent='⚠ კოდი უკვე გამოყენებულია';return;}
+
+  if(VALID_CODES_HASHED.includes(h)){
+    // Valid code!
+    usedCodes.push(h);
+    localStorage.setItem('pv_used_codes',JSON.stringify(usedCodes));
+    activatePremium();
+    inp.value='';
+    msg.style.color='var(--green)';
+    msg.textContent='✅ PREMIUM გააქტიურდა!';
+  }else{
+    msg.style.color='var(--red)';
+    msg.textContent='❌ კოდი არასწორია. შეამოწმე და სცადე ხელახლა.';
+    toast('❌ არასწორი კოდი');
+  }
+}
+
+function activatePremium(){
+  S.hasPremium=true;save();
+  // Hide usage timer
+  const hu=document.getElementById('h-usage');
+  if(hu)hu.style.display='none';
+  // Remove any lock overlay
+  const ov=document.getElementById('usage-overlay');
+  if(ov)ov.remove();
+  // Show banner
+  const banner=document.getElementById('premium-banner-active');
+  const buyCard=document.getElementById('premium-buy-card');
+  if(banner)banner.style.display='block';
+  if(buyCard)buyCard.style.display='none';
+  refreshUI();renderPrizes();renderLeaderboard();
+  // Big celebration
+  toast('🎉 PREMIUM PARASKEVA UNLOCKED! ულიმიტო!','');
+  setTimeout(()=>{
+    const el=document.getElementById('p-prizes');
+    if(el)el.scrollIntoView({behavior:'smooth'});
+  },200);
+}
+
+function saveLbName(){
+  if(!S.hasPremium){toast('🔒 Premium საჭიროა!','');return;}
+  const n=document.getElementById('lb-name').value.trim();
+  if(!n){toast('⚠ სახელი შეიყვანე');return;}
+  localStorage.setItem('pv_lbname',JSON.stringify(n));
+  const score={name:n,xp:S.xp,ts:Date.now()};
+  localStorage.setItem('pv_myscore',JSON.stringify(score));
+  toast('✓ შენახულია! ლიდერბორდი განახლდა');
+  renderLeaderboard();
+}
+
+function renderLeaderboard(){
+  const el=document.getElementById('leaderboard-list');
+  if(!el)return;
+  // Show/hide locked message
+  const lockedMsg=document.getElementById('lb-locked-msg');
+  const inputWrap=document.getElementById('lb-input-wrap');
+  if(lockedMsg){lockedMsg.style.display=S.hasPremium?'none':'block';}
+  if(inputWrap){inputWrap.style.display=S.hasPremium?'flex':'none';inputWrap.style.removeProperty('display');if(!S.hasPremium)inputWrap.style.display='none';else inputWrap.style.display='flex';}
+  const scores=[];
+  const my=lsj('pv_myscore',null);
+  if(my)scores.push(my);
+  // Add some sample global entries for demo
+  const demo=[
+    {name:'გიორგი ბ.',xp:8420,ts:Date.now()-86400000*2},
+    {name:'მარიამ თ.',xp:6130,ts:Date.now()-86400000},
+    {name:'ნიკა კ.',xp:4890,ts:Date.now()-3600000},
+    {name:'სოფო ლ.',xp:3200,ts:Date.now()-7200000},
+    {name:'ლუკა მ.',xp:2100,ts:Date.now()-86400000*3},
+  ];
+  demo.forEach(d=>{if(!scores.find(s=>s.name===d.name))scores.push(d);});
+  scores.sort((a,b)=>b.xp-a.xp);
+  const myName=lsj('pv_lbname','');
+  el.innerHTML=scores.slice(0,10).map((s,i)=>{
+    const isMe=s.name===myName;
+    return '<div style="display:flex;align-items:center;gap:.8rem;padding:.55rem .8rem;border-bottom:1px solid var(--border);'+(isMe?'background:rgba(0,255,65,.06);':'')+'">'
+      +'<div style="font-size:.9rem;width:28px;text-align:center;color:'+(i===0?'var(--yellow)':i===1?'#aaa':i===2?'#cd7f32':'var(--text-dim)')+';font-family:VT323">'+(i+1)+'</div>'
+      +'<div style="flex:1;font-size:.78rem;color:'+(isMe?'var(--green)':'var(--text)')+'">'+esc(s.name)+(isMe?' ◈':'')+' </div>'
+      +'<div style="font-size:.78rem;color:var(--yellow)">⚡ '+s.xp.toLocaleString()+'</div>'
+      +'</div>';
+  }).join('');
+  const savedName=lsj('pv_lbname','');
+  if(savedName)document.getElementById('lb-name').value=savedName;
+}
+
+document.addEventListener('DOMContentLoaded',boot);
+</script>
+</body>
+</html>
